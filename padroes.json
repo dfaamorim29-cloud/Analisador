@@ -1,12 +1,38 @@
 {
   "AOP PANIC": {
-    "causa": "Falha de leitura em sensores (Proximity, Charge ou Coil Flex).",
-    "risco": "Médio",
-    "obs": "No iPhone 14 Plus, verifique oxidação interna. Se for apenas um log isolado, pode ser erro temporário do iOS."
+    "causa": "Falha nos sensores (Proximity, Charge ou Coil Flex).",
+    "obs": "Verificar oxidação. No iPhone 14 Plus, é comum falha em um dos flexes."
   },
   "SMC Panic": {
-    "causa": "Falha na comunicação com a Bateria ou CI de Carga.",
-    "risco": "Alto",
-    "obs": "Teste com uma bateria original e verifique o conector FPC."
+    "causa": "Falha de comunicação com a bateria ou setor de carga.",
+    "obs": "Verificar conector FPC da bateria e o CI de carga (Tristar/Hydra)."
+  },
+  "Prs0": {
+    "causa": "Falha no Barômetro (Sensor de Pressão).",
+    "obs": "Geralmente resolvido com a troca do Flex de Carga."
+  },
+  "0x1000": {
+    "causa": "Falha no Flex de Proximidade (Linha 13).",
+    "obs": "Verificar se o flex do auricular está bem encaixado ou oxidado."
+  },
+  "0x100000": {
+    "causa": "Falha no Flex de Carga ou Power (Linha 14/15/16).",
+    "obs": "Substituir o Dock de Carga ou o Flex do Botão Power."
+  },
+  "0x400000": {
+    "causa": "Falha no Flex Wireless / Vidro Traseiro (Linha 15/16/17 Pro).",
+    "obs": "Verificar se o flex colado no vidro traseiro está rasgado ou desplugado."
+  },
+  "0x800000": {
+    "causa": "Falha no Carregamento Sem Fio (iPhone 17 Pro).",
+    "obs": "Causa reinício a cada 3 minutos. Comum após troca de vidro traseiro."
+  },
+  "0xa1": {
+    "causa": "Falha Crítica de Dados da Bateria (Linha 15/16/17).",
+    "obs": "Aparelho reinicia a cada 3 min. Testar com outra bateria original."
+  },
+  "0xa9": {
+    "causa": "Erro de Comunicação I2C da Bateria (iPhone 16/17).",
+    "obs": "Verificar resistores próximos ao conector FPC na placa principal."
   }
 }
