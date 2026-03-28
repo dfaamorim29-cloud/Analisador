@@ -2,71 +2,52 @@ import streamlit as st
 import json
 import os
 
-# Configuração da Página
+# Configuração simples e robusta
 st.set_page_config(page_title="iPhone & CIA - Diagnóstico", page_icon="📱")
 
-# Estilo Visual (CSS)
-st.markdown("""
-    <style>
-    .titulo-loja { color: #E63946; font-size: 45px; font-weight: bold; text-align: center; margin-bottom: 0px; }
-    .apelido { color: #457B9D; font-size: 20px; text-align: center; font-style: italic; margin-top: -10px; margin-bottom: 30px; }
-    .resultado-card { padding: 20px; border-radius: 10px; background-color: #f1f1f1; border-left: 5px solid #E63946; }
-    </style>
-    """, unsafe_markdown=True)
+# Título direto e profissional
+st.title(" iPhone & CIA")
+st.subheader("Sistema de Análise do Chefinho 👨‍🔧")
 
-# Cabeçalho Personalizado
-st.markdown('<div class="titulo-loja"> iPhone & CIA</div>', unsafe_markdown=True)
-st.markdown('<div class="apelido">Sistema de Análise do Chefinho 👨‍🔧</div>', unsafe_markdown=True)
-
+# Função para carregar os padrões
 def carregar_padroes():
     if os.path.exists('padroes.json'):
-        with open('padroes.json', 'r', encoding='utf-8') as f:
-            return json.load(f)
+        try:
+            with open('padroes.json', 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            return {}
     return {}
 
-def salvar_padrao(nome_erro, causa, obs):
-    padroes = carregar_padroes()
-    padroes[nome_erro] = {"causa": causa, "obs": obs}
-    with open('padroes.json', 'w', encoding='utf-8') as f:
-        json.dump(padroes, f, indent=4, ensure_ascii=False)
-
-# --- BARRA LATERAL ---
-with st.sidebar:
-    st.header("⚙️ Painel do Chefinho")
-    with st.expander("Cadastrar Novo Erro"):
-        novo_erro = st.text_input("Código do Erro")
-        nova_causa = st.text_area("Causa Provável")
-        nova_obs = st.text_area("Dica Técnica")
-        if st.button("💾 Salvar na Memória"):
-            salvar_padrao(novo_erro, nova_causa, nova_obs)
-            st.success("Aprendido!")
-
-# --- ÁREA DE ANÁLISE ---
-arquivo = st.file_uploader("Arraste o log Panic Full aqui", type=["ips", "txt"])
+# --- ÁREA DE UPLOAD ---
+st.write("### 📤 Subir Arquivo de Log")
+arquivo = st.file_uploader("Escolha o arquivo .ips ou .txt", type=["ips", "txt"])
 
 if arquivo:
-    conteudo = arquivo.read().decode("utf-8")
-    padroes = carregar_padroes()
-    encontrado = False
-    
-    st.subheader("🔍 Resultado da Varredura:")
-    
-    for erro, info in padroes.items():
-        if erro in conteudo:
-            st.error(f"### 🚨 {erro} Detectado!")
-            st.markdown(f"""
-            <div class="resultado-card">
-                <strong>🛠 Causa:</strong> {info['causa']}<br><br>
-                <strong>💡 Dica do Chefinho:</strong> {info['obs']}
-            </div>
-            """, unsafe_markdown=True)
-            
-            # Botão para copiar relatório
-            relatorio = f"RELATÓRIO IPHONE & CIA\nErro: {erro}\nCausa: {info['causa']}\nSolução: {info['obs']}"
-            st.download_button("📥 Baixar Relatório para o Cliente", relatorio, file_name="diagnostico_iphone.txt")
-            encontrado = True
-            break
-    
-    if not encontrado:
-        st.warning("Padrão não identificado. O log foi exibido abaixo para análise manual.")
-        st.text_area("Texto do Log:", conteudo, height=250)
+    try:
+        # Lê o arquivo e ignora letras maiúsculas/minúsculas
+        conteudo = arquivo.read().decode("utf-8")
+        conteudo_maiusculo = conteudo.upper()
+        padroes = carregar_padroes()
+        achou_algo = False
+
+        st.write("---")
+        st.write("### 📋 Resultado da Análise:")
+
+        for erro, info in padroes.items():
+            # Procura cada erro do seu banco de dados dentro do log
+            if erro.upper() in conteudo_maiusculo:
+                st.error(f"🚨 **FALHA DETECTADA:** {erro}")
+                st.info(f"🛠 **CAUSA:** {info['causa']}")
+                st.success(f"💡 **DICA DO CHEFINHO:** {info['obs']}")
+                achou_algo = True
+                st.write("---")
+        
+        if not achou_algo:
+            st.warning("⚠️ Padrão não identificado automaticamente.")
+            st.write("Chefinho, esse erro deve ser novo! Copie o começo do log e mande aqui para eu te ajudar.")
+            with st.expander("Clique aqui para ver o texto do log"):
+                st.text(conteudo)
+
+    except Exception as e:
+        st.error(f"Erro ao ler o arquivo: {e}")
