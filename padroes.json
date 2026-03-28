@@ -1,0 +1,12 @@
+{
+  "AOP PANIC": {
+    "causa": "Falha de leitura em sensores (Proximity, Charge ou Coil Flex).",
+    "risco": "Médio",
+    "obs": "No iPhone 14 Plus, verifique oxidação interna. Se for apenas um log isolado, pode ser erro temporário do iOS."
+  },
+  "SMC Panic": {
+    "causa": "Falha na comunicação com a Bateria ou CI de Carga.",
+    "risco": "Alto",
+    "obs": "Teste com uma bateria original e verifique o conector FPC."
+  }
+}
