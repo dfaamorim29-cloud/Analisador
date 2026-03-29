@@ -17,7 +17,7 @@ def carregar_padroes():
         except: return []
     return []
 
-arquivo = st.file_uploader("Arraste o log Panic Full aqui", type=["ips", "txt"], key="analise_v6")
+arquivo = st.file_uploader("Arraste o log Panic Full aqui", type=["ips", "txt"], key="analise_v7")
 
 if arquivo:
     conteudo = arquivo.read().decode("utf-8")
@@ -52,33 +52,32 @@ if arquivo:
         
         achou = False
         
-        # 1. Tenta encontrar a palavra ou código exato (ex: 0x400000)
+        # 1. Tenta encontrar a palavra ou código exato
         if erro_upper in area_do_erro:
             achou = True
         
-        # 2. SE FOR CÓDIGO HEXADECIMAL: Converte para número e procura! (A Magia acontece aqui)
+        # 2. SE FOR CÓDIGO HEXADECIMAL: Converte para número e procura
         elif erro_original.lower().startswith("0x"):
             try:
-                erro_dec = str(int(erro_original, 16)) # Ex: Transforma 0x400000 em 4194304
-                # Busca o número decimal exato usando regex para evitar falsos positivos
+                erro_dec = str(int(erro_original, 16)) 
                 if re.search(r'\b' + erro_dec + r'\b', area_do_erro):
                     achou = True
             except:
                 pass
                 
-        # Se achou de um jeito ou de outro e o modelo bate...
+        # Se encontrou e o modelo corresponde
         if achou:
             if "TODOS" in modelos_alvo or any(m in modelo_comercial for m in modelos_alvo):
                 if erro_original.lower().startswith("0x"):
                     encontrado = item
-                    break # É um código exato! Para a busca e mostra este.
+                    break 
                 elif not encontrado:
-                    encontrado = item # Salva o erro genérico mas continua a procurar se tem código específico
+                    encontrado = item 
 
     if encontrado:
         dica_formatada = encontrado.get('obs', 'N/A').replace("{modelo}", modelo_comercial)
         
-        st.error(f"🚨 **Falha Detectada:** {encontrado['erro']} (Decimal convertido pelo sistema)")
+        st.error(f"🚨 **Falha Detectada:** {encontrado['erro']}")
         c1, c2 = st.columns(2)
         with c1:
             st.write("**🔌 Periférico Alvo:**")
