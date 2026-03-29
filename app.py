@@ -27,11 +27,11 @@ def carregar_padroes():
             with open('padroes.json', 'r', encoding='utf-8') as f:
                 return json.load(f)
         except Exception as e:
-            st.error(f"Erro no arquivo padroes.json: {e}")
+            st.error(f"Erro no ficheiro padroes.json: {e}")
             return []
     return []
 
-arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v13")
+arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v14")
 
 if arquivo:
     conteudo = arquivo.read().decode("utf-8")
@@ -43,29 +43,31 @@ if arquivo:
     modelo_match = re.search(r'"product"\s*:\s*"([^"]+)"', conteudo)
     mod_tec = modelo_match.group(1) if modelo_match else "Desconhecido"
     
+    # Dicionário de Modelos Expandido
     MODELOS = {
+        "iPhone11,2": "iPhone XS", "iPhone11,4": "iPhone XS Max", "iPhone11,6": "iPhone XS Max", "iPhone11,8": "iPhone XR",
         "iPhone12,1": "iPhone 11", "iPhone12,3": "iPhone 11 Pro", "iPhone12,5": "iPhone 11 Pro Max",
-        "iPhone13,4": "iPhone 12 Pro Max", "iPhone14,7": "iPhone 14", "iPhone14,8": "iPhone 14 Plus",
-        "iPhone15,2": "iPhone 14 Pro", "iPhone15,3": "iPhone 14 Pro Max", "iPhone16,1": "iPhone 15 Pro",
-        "iPhone16,2": "iPhone 15 Pro Max", "iPhone17,1": "iPhone 16 Pro", "iPhone17,2": "iPhone 16 Pro Max"
+        "iPhone13,1": "iPhone 12 Mini", "iPhone13,2": "iPhone 12", "iPhone13,3": "iPhone 12 Pro", "iPhone13,4": "iPhone 12 Pro Max",
+        "iPhone14,4": "iPhone 13 Mini", "iPhone14,5": "iPhone 13", "iPhone14,2": "iPhone 13 Pro", "iPhone14,3": "iPhone 13 Pro Max",
+        "iPhone14,7": "iPhone 14", "iPhone14,8": "iPhone 14 Plus", "iPhone15,2": "iPhone 14 Pro", "iPhone15,3": "iPhone 14 Pro Max",
+        "iPhone15,4": "iPhone 15 Plus", "iPhone15,5": "iPhone 15", "iPhone16,1": "iPhone 15 Pro", "iPhone16,2": "iPhone 15 Pro Max",
+        "iPhone17,1": "iPhone 16 Pro", "iPhone17,2": "iPhone 16 Pro Max", "iPhone17,3": "iPhone 16", "iPhone17,4": "iPhone 16 Plus"
     }
     modelo_comercial = MODELOS.get(mod_tec, mod_tec)
     
-    # Janela de busca ampliada para 15.000 caracteres
-    area_do_erro = conteudo[:15000].upper()
+    # Janela de busca ampliada para 20.000 caracteres (Logs do iOS 18 são maiores)
+    area_do_erro = conteudo[:20000].upper()
     
     encontrado = None
     matches_possiveis = []
 
-    # Busca exaustiva em todos os padrões
     for item in padroes:
         erro_id = item.get("erro", "").upper()
         modelos_alvo = item.get("modelos", ["TODOS"])
         
-        # Verifica se o modelo do log está na lista do erro
         if "TODOS" in modelos_alvo or any(m in modelo_comercial for m in modelos_alvo):
-            # Busca por código Hexadecimal ou Decimal
             achou = False
+            # Busca por String, Hex ou Decimal
             if erro_id in area_do_erro:
                 achou = True
             elif erro_id.startswith("0X"):
@@ -78,15 +80,16 @@ if arquivo:
             if achou:
                 matches_possiveis.append(item)
 
-    # Priorização: Códigos 0x são mais precisos que textos genéricos
+    # Prioridade 1: Erros Críticos (DCP, AOP, Hexadecimais)
     for m in matches_possiveis:
-        if m["erro"].upper().startswith("0X"):
+        e = m["erro"].upper()
+        if e.startswith("0X") or "DCP" in e or "AOP" in e:
             encontrado = m
             break
+    
     if not encontrado and matches_possiveis:
         encontrado = matches_possiveis[0]
 
-    # Exibição dos Resultados
     st.info(f"📱 **Aparelho:** {modelo_comercial}  |  📅 **Data:** {data_log}")
 
     if encontrado:
@@ -109,10 +112,8 @@ if arquivo:
         dica = encontrado['obs'].replace("{modelo}", modelo_comercial)
         st.success(f"**💡 Dica do Chefinho:**\n\n{dica}")
     else:
-        st.warning("⚠️ Padrão não identificado. Envie o log para análise manual.")
+        st.warning("⚠️ Padrão não identificado. Envie para o Chefinho.")
 
-    # Botão de SOS
     st.write("---")
     email_dest = "dfaamorim29@gmail.com"
-    assunto = urllib.parse.quote(f"LOG NÃO IDENTIFICADO - {modelo_comercial}")
-    st.markdown(f'<a href="mailto:{email_dest}?subject={assunto}" style="background-color: #007AFF; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold;">📧 Enviar log para o Chefinho</a>', unsafe_allow_html=True)
+    st.markdown(f'<a href="mailto:{email_dest}?subject=LOG%20REJEITADO%20-{modelo_comercial}" style="background-color: #007AFF; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold;">📧 Enviar log para o Chefinho</a>', unsafe_allow_html=True)
