@@ -15,17 +15,17 @@
   },
   {
     "erro": "0x400000",
+    "modelos": ["iPhone 14", "iPhone 14 Plus"],
+    "periferico": "Flex da Bobina de Carregamento Sem Fios (MagSafe)",
+    "causa": "Falha de comunicação entre o SMC e os sensores térmicos na bobina.",
+    "obs": "Possível oxidação interna. No {modelo}, desconecte o flex da bobina MagSafe da placa; se o telemóvel estabilizar após 5 a 10 min, a troca resolve. Se foi um Pânico isolado, desconsidere."
+  },
+  {
+    "erro": "0x400000",
     "modelos": ["iPhone 15 Pro", "iPhone 16 Pro", "iPhone 15 Pro Max", "iPhone 16 Pro Max", "iPhone 17 Pro", "iPhone 17 Pro Max"],
     "periferico": "Flex Wireless (Vidro Traseiro)",
     "causa": "Falha de comunicação com a bobina NFC/Wireless.",
     "obs": "O {modelo} é muito sensível a falhas no flex traseiro. Comum rasgar o flex na troca do vidro."
-  },
-  {
-    "erro": "0x400000",
-    "modelos": ["iPhone 14", "iPhone 14 Plus"],
-    "periferico": "Flex Wireless (NFC) ou Flex de Carga",
-    "causa": "Falha de comunicação no barramento de sensores (SMC BSC).",
-    "obs": "No {modelo}, verifique o flex de carga sem fio traseiro ou o dock de carga."
   },
   {
     "erro": "0x200000",
