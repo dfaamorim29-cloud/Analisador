@@ -1,15 +1,27 @@
 [
   {
+    "erro": "mic2",
+    "peso": 1,
+    "modelos": ["iPhone 11", "iPhone 11 Pro", "iPhone 11 Pro Max"],
+    "periferico": "Flex do Botão Power",
+    "risco": "Médio",
+    "suspeito_principal": "Flex do Botão Power (Mic2).",
+    "causa": "Watchdog Timeout por interrupção de comunicação com o sensor térmico do mic2.",
+    "obs": "No {modelo}, desconecte o Flex do Botão Power da placa lógica. Se o aparelho estabilizar durante os testes e não reiniciar a cada 3 minutos, a troca da peça resolve a anomalia."
+  },
+  {
     "erro": "0x140000",
+    "peso": 1,
     "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max"],
     "periferico": "Flex do Conector de Carga ou Flex do Botão Power",
     "risco": "Médio",
     "suspeito_principal": "Flex do Conector de Carga (Mais vulnerável à oxidação dada a exposição na porta inferior).",
     "causa": "Curto no barramento partilhado SMC BSC (Soma de 0x40000 + 0x100000).",
-    "obs": "No {modelo}, um curto está bloqueando a comunicação. 1º Teste (Maior Chance): Desconecte o Flex de Carga. 2º Teste (Menor Chance): Desconecte o Flex do Botão Power. Se estabilizar após 5-10 min, a peça desligada é a culpada. Possível oxidação interna."
+    "obs": "No {modelo}, um curto está a bloquear a comunicação. 1º Teste: Desconecte o Flex de Carga. 2º Teste: Desconecte o Flex do Botão Power. Se estabilizar após 5-10 min, a peça desligada é a culpada."
   },
   {
     "erro": "0xC0000",
+    "peso": 1,
     "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max"],
     "periferico": "Flex de Carga ou Bobina MagSafe",
     "risco": "Médio",
@@ -19,6 +31,7 @@
   },
   {
     "erro": "0x80000",
+    "peso": 1,
     "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max"],
     "periferico": "Flex da Bobina MagSafe",
     "risco": "Médio",
@@ -28,6 +41,7 @@
   },
   {
     "erro": "0x40000",
+    "peso": 1,
     "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max"],
     "periferico": "Flex do Conector de Carga (Dock)",
     "risco": "Médio",
@@ -37,6 +51,7 @@
   },
   {
     "erro": "0x400000",
+    "peso": 1,
     "modelos": ["iPhone 15 Pro", "iPhone 16 Pro", "iPhone 15 Pro Max", "iPhone 16 Pro Max", "iPhone 17 Pro", "iPhone 17 Pro Max"],
     "periferico": "Flex da Bobina de Carregamento / MagSafe",
     "risco": "Médio",
@@ -45,6 +60,7 @@
   },
   {
     "erro": "0x400000",
+    "peso": 1,
     "modelos": ["iPhone 14", "iPhone 14 Plus"],
     "periferico": "Flex de Carga ou MagSafe",
     "risco": "Médio",
@@ -53,6 +69,7 @@
   },
   {
     "erro": "0x500000",
+    "peso": 1,
     "modelos": ["iPhone 14", "iPhone 14 Plus"],
     "periferico": "Bateria, Flex de Carga ou Taptic",
     "risco": "Médio",
@@ -62,6 +79,7 @@
   },
   {
     "erro": "0x700000",
+    "peso": 1,
     "modelos": ["iPhone 15 Pro", "iPhone 15 Pro Max", "iPhone 16 Pro", "iPhone 16 Pro Max"],
     "periferico": "Flex do Conector de Carga (USB-C) / Wireless",
     "risco": "Médio",
@@ -71,6 +89,7 @@
   },
   {
     "erro": "0x200000",
+    "peso": 1,
     "modelos": ["iPhone 14", "iPhone 15", "iPhone 16", "iPhone 17"],
     "periferico": "Flex Wireless / Traseiro",
     "risco": "Médio",
@@ -79,6 +98,7 @@
   },
   {
     "erro": "0x200000",
+    "peso": 1,
     "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max", "iPhone 15 Pro", "iPhone 15 Pro Max", "iPhone 16 Pro", "iPhone 16 Pro Max"],
     "periferico": "Flex de Proximidade (Ecrã)",
     "risco": "Médio",
@@ -87,6 +107,7 @@
   },
   {
     "erro": "0x100000",
+    "peso": 1,
     "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max"],
     "periferico": "Flex do Botão Power",
     "risco": "Médio",
@@ -95,6 +116,7 @@
   },
   {
     "erro": "0x100000",
+    "peso": 1,
     "modelos": ["iPhone 14", "iPhone 14 Plus", "iPhone 15", "iPhone 15 Plus", "iPhone 16", "iPhone 16 Plus"],
     "periferico": "Flex de Carga (Dock)",
     "risco": "Médio",
@@ -103,6 +125,7 @@
   },
   {
     "erro": "0x300000",
+    "peso": 1,
     "modelos": ["iPhone 15 Pro", "iPhone 15 Pro Max", "iPhone 16 Pro", "iPhone 16 Pro Max"],
     "periferico": "Flex de Carga USB-C",
     "risco": "Médio",
@@ -111,6 +134,7 @@
   },
   {
     "erro": "0x600000",
+    "peso": 1,
     "modelos": ["iPhone 16 Pro", "iPhone 16 Pro Max"],
     "periferico": "Proximidade + Wireless",
     "risco": "Médio",
@@ -120,6 +144,7 @@
   },
   {
     "erro": "0x600000",
+    "peso": 1,
     "modelos": ["iPhone 17 Pro", "iPhone 17 Pro Max"],
     "periferico": "Flex de Carga + Sensor de Ar",
     "risco": "Médio",
@@ -129,6 +154,7 @@
   },
   {
     "erro": "0x800000",
+    "peso": 1,
     "modelos": ["iPhone 17 Pro", "iPhone 17 Pro Max"],
     "periferico": "Flex de Carregamento Sem Fio",
     "risco": "Médio",
@@ -137,6 +163,7 @@
   },
   {
     "erro": "0xa1",
+    "peso": 1,
     "modelos": ["iPhone 15", "iPhone 15 Pro", "iPhone 16", "iPhone 16 Pro", "iPhone 17", "iPhone 17 Pro"],
     "periferico": "Bateria",
     "risco": "Baixo",
@@ -145,6 +172,7 @@
   },
   {
     "erro": "0xa9",
+    "peso": 1,
     "modelos": ["iPhone 16", "iPhone 16 Pro", "iPhone 17", "iPhone 17 Pro"],
     "periferico": "Circuito de Bateria (Placa)",
     "risco": "Alto",
@@ -153,6 +181,7 @@
   },
   {
     "erro": "0x1000",
+    "peso": 1,
     "modelos": ["iPhone 13", "iPhone 13 Mini", "iPhone 13 Pro", "iPhone 13 Pro Max"],
     "periferico": "Flex de Proximidade (Ecrã)",
     "risco": "Médio",
@@ -161,6 +190,7 @@
   },
   {
     "erro": "0x800",
+    "peso": 1,
     "modelos": ["iPhone 13", "iPhone 13 Mini", "iPhone 13 Pro", "iPhone 13 Pro Max"],
     "periferico": "Flex de Carga (Dock)",
     "risco": "Médio",
@@ -169,6 +199,7 @@
   },
   {
     "erro": "0x4000",
+    "peso": 1,
     "modelos": ["iPhone 13", "iPhone 13 Mini", "iPhone 13 Pro", "iPhone 13 Pro Max"],
     "periferico": "Bateria (Linha de Dados)",
     "risco": "Baixo",
@@ -177,6 +208,7 @@
   },
   {
     "erro": "0x400",
+    "peso": 1,
     "modelos": ["iPhone 13 Mini"],
     "periferico": "Placa Lógica (Bottom Board)",
     "risco": "Alto",
@@ -185,6 +217,7 @@
   },
   {
     "erro": "DCP PANIC",
+    "peso": 1,
     "modelos": ["TODOS"],
     "periferico": "Ecrã (Display) ou Flex do Ecrã",
     "risco": "Médio",
@@ -194,6 +227,7 @@
   },
   {
     "erro": "TH0A",
+    "peso": 1,
     "modelos": ["iPhone 12", "iPhone 12 Pro", "iPhone 12 Pro Max", "iPhone 12 Mini"],
     "periferico": "Placa Lógica (CPU)",
     "risco": "Alto",
@@ -201,16 +235,8 @@
     "obs": "No {modelo}, indica rompimento de trilha interna. Exige microsoldadura avançada."
   },
   {
-    "erro": "AppleEmbeddedTempSensor",
-    "modelos": ["TODOS"],
-    "periferico": "Flex do Botão Power ou Flex de Carga",
-    "risco": "Médio",
-    "suspeito_principal": "Flex do Botão Power (Frequentemente afetado por humidade).",
-    "causa": "Pânico 'Kernel data abort' por falha de sensores térmicos.",
-    "obs": "No {modelo}, desconecte o Power e teste. Se persistir, desconecte o Flex de Carga. Padrão de oxidação."
-  },
-  {
     "erro": "AOP PANIC",
+    "peso": 1,
     "modelos": ["TODOS"],
     "periferico": "Proximity Flex, Charge Flex ou Coil Flex",
     "risco": "Médio",
@@ -219,24 +245,8 @@
     "obs": "Como os 3 flexes partilham a mesma via no {modelo}, desligue o de Proximidade primeiro para teste."
   },
   {
-    "erro": "RootDomainUserClient",
-    "modelos": ["TODOS"],
-    "periferico": "Bateria ou PMIC",
-    "risco": "Baixo/Médio",
-    "suspeito_principal": "Bateria (Degradação Química).",
-    "causa": "Busy Timeout - Bloqueio na gestão de energia do sistema.",
-    "obs": "No {modelo}, inicie o diagnóstico com uma bateria nova e original. Se persistir, verifique o PMIC."
-  },
-  {
-    "erro": "mic2",
-    "modelos": ["iPhone 11", "iPhone 11 Pro", "iPhone 11 Pro Max"],
-    "periferico": "Flex do Botão Power",
-    "risco": "Médio",
-    "causa": "Falha no microfone secundário ou sensor térmico.",
-    "obs": "O {modelo} reinicia se não detetar o mic2. Comum após queda ou troca de vidro traseiro."
-  },
-  {
     "erro": "Prs0",
+    "peso": 1,
     "modelos": ["TODOS"],
     "periferico": "Flex de Carga (Barômetro)",
     "risco": "Médio",
@@ -245,6 +255,7 @@
   },
   {
     "erro": "Mic1",
+    "peso": 1,
     "modelos": ["TODOS"],
     "periferico": "Flex de Carga (Microfone Principal)",
     "risco": "Médio",
@@ -253,6 +264,7 @@
   },
   {
     "erro": "TG0B",
+    "peso": 1,
     "modelos": ["TODOS"],
     "periferico": "Bateria",
     "risco": "Baixo",
@@ -261,6 +273,7 @@
   },
   {
     "erro": "TG0V",
+    "peso": 1,
     "modelos": ["TODOS"],
     "periferico": "Bateria / Linha PMU",
     "risco": "Baixo/Médio",
@@ -269,6 +282,7 @@
   },
   {
     "erro": "Eiger",
+    "peso": 1,
     "modelos": ["iPhone 12", "iPhone 12 Mini", "iPhone 12 Pro", "iPhone 12 Pro Max"],
     "periferico": "Flex de Carga (Dock)",
     "risco": "Médio",
@@ -276,7 +290,28 @@
     "obs": "A linha do {modelo} é muito sensível a componentes paralelos. Use um flex original."
   },
   {
+    "erro": "AppleEmbeddedTempSensor",
+    "peso": 2,
+    "modelos": ["TODOS"],
+    "periferico": "Flex do Botão Power ou Flex de Carga",
+    "risco": "Médio",
+    "suspeito_principal": "Flex do Botão Power (Frequentemente afetado por humidade).",
+    "causa": "Pânico 'Kernel data abort' por falha de sensores térmicos.",
+    "obs": "No {modelo}, desconecte o Power e teste. Se persistir, desconecte o Flex de Carga. Padrão de oxidação."
+  },
+  {
+    "erro": "RootDomainUserClient",
+    "peso": 2,
+    "modelos": ["TODOS"],
+    "periferico": "Bateria ou PMIC",
+    "risco": "Baixo/Médio",
+    "suspeito_principal": "Bateria (Degradação Química).",
+    "causa": "Busy Timeout - Bloqueio na gestão de energia do sistema.",
+    "obs": "No {modelo}, inicie o diagnóstico com uma bateria nova e original. Se persistir, verifique o PMIC."
+  },
+  {
     "erro": "Thermal Monitor",
+    "peso": 3,
     "modelos": ["TODOS"],
     "periferico": "Flex de Carga ou Power Flex",
     "risco": "Médio",
@@ -285,6 +320,7 @@
   },
   {
     "erro": "SMC Panic",
+    "peso": 3,
     "modelos": ["TODOS"],
     "periferico": "Bateria ou Setor de Carga (Placa)",
     "risco": "Baixo/Médio",
