@@ -2,6 +2,7 @@ import streamlit as st
 import json
 import os
 import re
+import urllib.parse
 
 st.set_page_config(page_title="iPhone & CIA - Diagnóstico", page_icon="📱")
 
@@ -31,11 +32,11 @@ st.markdown("""
     
     /* Tradução do botão "Browse files" */
     [data-testid="stFileUploadDropzone"] button {
-        font-size: 0px; /* Esconde o texto antigo diminuindo a fonte para zero */
+        font-size: 0px; 
     }
     [data-testid="stFileUploadDropzone"] button::after {
         content: "Procurar Arquivo";
-        font-size: 14px; /* Define o tamanho do novo texto */
+        font-size: 14px; 
         font-weight: 400;
     }
     </style>
@@ -53,14 +54,12 @@ def carregar_padroes():
         except: return []
     return []
 
-# O título da caixa de upload agora também está em português!
-arquivo = st.file_uploader("Selecione o relatório de erro (Panic Full):", type=["ips", "txt"], key="analise_v9")
+arquivo = st.file_uploader("Selecione o relatório de erro (Panic Full):", type=["ips", "txt"], key="analise_v10")
 
 if arquivo:
     conteudo = arquivo.read().decode("utf-8")
     padroes = carregar_padroes()
     
-    # Extração de Dados
     data_match = re.search(r'"date"\s*:\s*"([^"]+)"', conteudo)
     data_log = data_match.group(1)[:19] if data_match else "Desconhecida"
     modelo_match = re.search(r'"product"\s*:\s*"([^"]+)"', conteudo)
@@ -89,11 +88,9 @@ if arquivo:
         
         achou = False
         
-        # 1. Tenta encontrar a palavra ou código exato
         if erro_upper in area_do_erro:
             achou = True
         
-        # 2. SE FOR CÓDIGO HEXADECIMAL: Converte para número e procura (A Magia)
         elif erro_original.lower().startswith("0x"):
             try:
                 erro_dec = str(int(erro_original, 16)) 
@@ -102,7 +99,6 @@ if arquivo:
             except:
                 pass
                 
-        # Se encontrou e o modelo corresponde
         if achou:
             if "TODOS" in modelos_alvo or any(m in modelo_comercial for m in modelos_alvo):
                 if erro_original.lower().startswith("0x"):
@@ -124,11 +120,46 @@ if arquivo:
             st.write("**🛠 Causa:**")
             st.write(encontrado.get('causa', 'N/A'))
             
-        # NOVA LÓGICA: Se houver a chave "suspeito_principal", mostra a dica de ouro!
         if "suspeito_principal" in encontrado:
             st.warning(f"🎯 **Alvo Principal:** {encontrado['suspeito_principal']}")
         
         st.success(f"**💡 Dica do Chefinho:**\n\n{dica_formatada}")
     else:
         st.warning("⚠️ Padrão não identificado para este modelo.")
+        
+    # --- NOVA SESSÃO: BOTÃO DE E-MAIL PARA O CHEFINHO ---
     st.write("---")
+    st.markdown("### 📩 Ajude a melhorar o sistema!")
+    st.write("O site não identificou o erro ou indicou a peça errada? Envie o arquivo para o Chefinho analisar e atualizar o banco de dados.")
+    
+    # Preparando os dados do e-mail
+    email_destino = "dfaamorim29@gmail.com"
+    assunto = f"Novo Log para Analise - {modelo_comercial}"
+    corpo_mensagem = f"Chefinho, o site não conseguiu analisar corretamente este log do {modelo_comercial}. Estou enviando em anexo para você dar uma olhada e adicionar ao padroes.json!\n\n(Lembre-se de anexar o arquivo .ips ou .txt neste e-mail antes de enviar)"
+    
+    # Codificando o texto para não dar erro no navegador
+    assunto_codificado = urllib.parse.quote(assunto)
+    corpo_codificado = urllib.parse.quote(corpo_mensagem)
+    
+    link_email = f"mailto:{email_destino}?subject={assunto_codificado}&body={corpo_codificado}"
+    
+    # Criando um botão estilizado
+    st.markdown(
+        f"""
+        <a href="{link_email}" target="_blank" style="
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007AFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        ">
+        📧 Enviar log para o Chefinho
+        </a>
+        <br><small style="color: gray;">Lembre-se de anexar o arquivo do log no e-mail que vai abrir!</small>
+        """, 
+        unsafe_allow_html=True
+    )
