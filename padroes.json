@@ -1,5 +1,12 @@
 [
   {
+    "erro": "AppleEmbeddedTempSensor",
+    "modelos": ["TODOS"],
+    "periferico": "Flex do Botão Power ou Flex de Carga (Dock)",
+    "causa": "Pânico 'Kernel data abort' por falha crítica de comunicação com os sensores de temperatura (AppleEmbeddedTempSensor).",
+    "obs": "No {modelo}, desconecte o Flex do Botão Power e teste. Se os reinícios persistirem, ligue-o novamente e desconecte o Flex de Carga. A peça que, ao ser desligada, estabilizar o aparelho (após 5-10 min) é a culpada. Padrão característico de oxidação interna. Se for um pânico isolado, desconsidere."
+  },
+  {
     "erro": "RootDomainUserClient",
     "modelos": ["TODOS"],
     "periferico": "Bateria ou Placa Lógica (PMIC)",
