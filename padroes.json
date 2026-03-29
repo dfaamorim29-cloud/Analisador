@@ -1,60 +1,44 @@
 [
   {
+    "erro": "DCP PANIC",
+    "modelos": ["TODOS"],
+    "periferico": "Ecrã (Display) ou Flex do Ecrã",
+    "risco": "Médio",
+    "suspeito_principal": "Ecrã (Falha de comunicação MIPI / Hardware do Painel).",
+    "causa": "Esgotamento de tempo (Timeout) na comunicação entre a CPU e o co-processador de imagem (DCP).",
+    "obs": "No {modelo}, o erro DCP PANIC indica que o hardware do ecrã não respondeu aos comandos. Teste com um ecrã novo de qualidade original. Verifique o conector FPC e possíveis oxidações nas linhas MIPI. Se for isolado, desconsidere."
+  },
+  {
     "erro": "0x400000",
     "modelos": ["iPhone 15 Pro", "iPhone 16 Pro", "iPhone 15 Pro Max", "iPhone 16 Pro Max"],
     "periferico": "Flex da Bobina de Carregamento / MagSafe",
     "risco": "Médio",
     "causa": "Falha de comunicação (SMC BSC failure, flag TAOJ) nos sensores da bobina MagSafe.",
-    "obs": "No {modelo}, o código 0x400000 (decimal 4194304) aponta para a bobina MagSafe. Abra o aparelho e desconecte o flex da bobina; se estabilizar após 5-10 min, troque a peça. Verifique oxidação sob a tampa traseira."
-  },
-  {
-    "erro": "0x400000",
-    "modelos": ["iPhone 14", "iPhone 14 Plus"],
-    "periferico": "Flex de Carga ou MagSafe",
-    "risco": "Médio",
-    "causa": "Falha de barramento SMC em periféricos traseiros.",
-    "obs": "No {modelo}, desconecte primeiro o dock de carga e depois a bobina MagSafe para isolar o curto."
-  },
-  {
-    "erro": "0x80000",
-    "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max"],
-    "periferico": "Flex da Bobina MagSafe",
-    "risco": "Médio",
-    "causa": "Falha no sensor térmico da bobina Wireless.",
-    "obs": "No {modelo}, o código 0x80000 indica falha direta na bobina MagSafe. Comum após troca de vidro traseiro ou queda."
-  },
-  {
-    "erro": "0xC0000",
-    "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max"],
-    "periferico": "Flex de Carga ou Bobina MagSafe",
-    "risco": "Médio",
-    "suspeito_principal": "Flex do Conector de Carga (Dock).",
-    "causa": "Curto no barramento compartilhado (Soma de 0x40000 + 0x80000).",
-    "obs": "No {modelo}, existe um curto bloqueando a linha. Comece desconectando o Flex de Carga inferior."
+    "obs": "No {modelo}, o código 0x400000 (decimal 4194304) aponta para a bobina MagSafe. Desconecte o flex e teste por 5-10 min."
   },
   {
     "erro": "TH0A",
     "modelos": ["iPhone 12", "iPhone 12 Pro", "iPhone 12 Pro Max"],
     "periferico": "Placa Lógica (CPU)",
     "risco": "Alto",
-    "causa": "Falha crítica de sensores térmicos ligados diretamente à CPU.",
-    "obs": "No {modelo}, isso indica rompimento de trilha interna na placa. Requer microsoldagem avançada."
+    "causa": "Falha crítica de sensores térmicos na placa.",
+    "obs": "No {modelo}, indica rompimento de trilha interna. Exige microsoldadura avançada."
   },
   {
-    "erro": "RootDomainUserClient",
+    "erro": "AppleEmbeddedTempSensor",
     "modelos": ["TODOS"],
-    "periferico": "Bateria ou PMIC",
-    "risco": "Baixo/Médio",
-    "suspeito_principal": "Bateria (Degradação Química).",
-    "causa": "Busy Timeout - Bloqueio na gestão de energia do sistema.",
-    "obs": "No {modelo}, inicie o diagnóstico com uma bateria nova e original. Se persistir, verifique o PMIC."
+    "periferico": "Flex do Botão Power ou Flex de Carga",
+    "risco": "Médio",
+    "causa": "Pânico 'Kernel data abort' por falha de sensores térmicos.",
+    "obs": "No {modelo}, desconecte o Power e teste. Se persistir, desconecte o Flex de Carga. Padrão de oxidação."
   },
   {
-    "erro": "SMC Panic",
+    "erro": "AOP PANIC",
     "modelos": ["TODOS"],
-    "periferico": "Bateria",
-    "risco": "Baixo",
-    "causa": "Falha genérica de comunicação com o controlador de energia.",
-    "obs": "Em logs de SMC no {modelo}, a bateria é sempre o primeiro item a ser testado."
+    "periferico": "Proximity Flex, Charge Flex ou Coil Flex",
+    "risco": "Médio",
+    "suspeito_principal": "Flex de Proximidade (Auricular / Face ID).",
+    "causa": "Falha no barramento I2C compartilhado.",
+    "obs": "Como os 3 flexes partilham a mesma via no {modelo}, desligue o de Proximidade primeiro para teste."
   }
 ]
