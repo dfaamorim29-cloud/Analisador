@@ -4,7 +4,6 @@ import os
 import re
 import urllib.parse
 
-# Removido o layout="wide" para voltar a ficar centralizado e bonito!
 st.set_page_config(page_title="iPhone & CIA - Diagnóstico Pro", page_icon="📱")
 
 st.markdown("""
@@ -31,7 +30,7 @@ def carregar_padroes():
             return []
     return []
 
-arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v16")
+arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v17")
 
 if arquivo:
     conteudo = arquivo.read().decode("utf-8")
@@ -53,7 +52,8 @@ if arquivo:
     }
     modelo_comercial = MODELOS.get(mod_tec, mod_tec)
     
-    area_do_erro = conteudo[:20000].upper()
+    # Busca alargada para evitar perder dados
+    area_do_erro = conteudo[:25000].upper()
     
     encontrado = None
     matches_possiveis = []
@@ -79,13 +79,9 @@ if arquivo:
             if achou:
                 matches_possiveis.append(item)
 
-    for m in matches_possiveis:
-        e = m["erro"].upper()
-        if e.startswith("0X") or "DCP" in e or "AOP" in e:
-            encontrado = m
-            break
-    
-    if not encontrado and matches_possiveis:
+    # A MAGIA ACONTECE AQUI: Ordena os erros por prioridade (Peso 1 é mais forte que Peso 2)
+    if matches_possiveis:
+        matches_possiveis.sort(key=lambda x: x.get("peso", 99))
         encontrado = matches_possiveis[0]
 
     st.info(f"📱 **Aparelho:** {modelo_comercial}  |  📅 **Data:** {data_log}")
@@ -113,4 +109,4 @@ if arquivo:
 
     st.write("---")
     email_dest = "dfaamorim29@gmail.com"
-    st.markdown(f'<a href="mailto:{email_dest}?subject=LOG%20REJEITADO%20-{modelo_comercial}" style="background-color: #007AFF; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold;">📧 Enviar log para o Chefinho</a>', unsafe_allow_html=True)
+    st.markdown(f'<a href="mailto:{email_dest}?subject=LOG%20REJEITADO%20-{modelo_comercial}" style="background-color: #007AFF; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">📧 Enviar log para o Chefinho</a>', unsafe_allow_html=True)
