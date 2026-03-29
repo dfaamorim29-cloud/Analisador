@@ -4,7 +4,8 @@ import os
 import re
 import urllib.parse
 
-st.set_page_config(page_title="iPhone & CIA - Diagnóstico Pro", page_icon="📱", layout="wide")
+# Removido o layout="wide" para voltar a ficar centralizado e bonito!
+st.set_page_config(page_title="iPhone & CIA - Diagnóstico Pro", page_icon="📱")
 
 st.markdown("""
     <style>
@@ -30,7 +31,7 @@ def carregar_padroes():
             return []
     return []
 
-arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v15")
+arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v16")
 
 if arquivo:
     conteudo = arquivo.read().decode("utf-8")
@@ -52,7 +53,6 @@ if arquivo:
     }
     modelo_comercial = MODELOS.get(mod_tec, mod_tec)
     
-    # Janela de busca ampla (20.000 caracteres)
     area_do_erro = conteudo[:20000].upper()
     
     encontrado = None
@@ -67,11 +67,9 @@ if arquivo:
             if not erro_id.startswith("0X") and erro_id in area_do_erro:
                 achou = True
             elif erro_id.startswith("0X"):
-                # Busca Hexadecimal Exata
                 if erro_id in area_do_erro:
                     achou = True
                 else:
-                    # Busca Decimal Exata (A Trava de Segurança)
                     try:
                         dec_val = str(int(erro_id, 16))
                         if re.search(r'\b' + dec_val + r'\b', area_do_erro):
@@ -81,7 +79,6 @@ if arquivo:
             if achou:
                 matches_possiveis.append(item)
 
-    # Ordenar por prioridade (Hexadecimal, DCP e AOP primeiro para evitar falsos positivos)
     for m in matches_possiveis:
         e = m["erro"].upper()
         if e.startswith("0X") or "DCP" in e or "AOP" in e:
@@ -96,16 +93,15 @@ if arquivo:
     if encontrado:
         st.error(f"🚨 **Falha Detectada:** {encontrado['erro']}")
         
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
         with col1:
             st.write("**🔌 Periféricos Suspeitos:**")
             st.subheader(encontrado['periferico'])
         with col2:
             st.write("**🛠 Causa Técnica:**")
             st.write(encontrado['causa'])
-        with col3:
-            st.write("**⚠️ Risco do Reparo:**")
-            st.info(encontrado.get('risco', 'Médio'))
+            
+        st.info(f"**⚠️ Risco do Reparo:** {encontrado.get('risco', 'Médio')}")
 
         if "suspeito_principal" in encontrado:
             st.warning(f"🎯 **Alvo Principal:** {encontrado['suspeito_principal']}")
