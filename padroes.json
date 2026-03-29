@@ -1,12 +1,12 @@
 [
   {
-    "erro": "DCP PANIC",
-    "modelos": ["TODOS"],
-    "periferico": "Ecrã (Display) ou Flex do Ecrã",
+    "erro": "0x140000",
+    "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max"],
+    "periferico": "Flex do Conector de Carga ou Flex do Botão Power",
     "risco": "Médio",
-    "suspeito_principal": "Ecrã (Falha de comunicação MIPI / Hardware do Painel).",
-    "causa": "Esgotamento de tempo (Timeout) na comunicação entre a CPU e o co-processador de imagem (DCP).",
-    "obs": "No {modelo}, o erro DCP PANIC indica que o hardware do ecrã não respondeu aos comandos. Teste com um ecrã novo de qualidade original. Verifique o conector FPC e possíveis oxidações nas linhas MIPI. Se for isolado, desconsidere."
+    "suspeito_principal": "Flex do Conector de Carga (Mais vulnerável à oxidação dada a exposição na porta inferior).",
+    "causa": "Curto no barramento partilhado SMC BSC (Soma de 0x40000 + 0x100000).",
+    "obs": "No {modelo}, um curto está bloqueando a comunicação. 1º Teste (Maior Chance): Desconecte o Flex de Carga. 2º Teste (Menor Chance): Desconecte o Flex do Botão Power. Se estabilizar após 5-10 min, a peça desligada é a culpada. Possível oxidação interna."
   },
   {
     "erro": "0xC0000",
@@ -67,7 +67,7 @@
     "risco": "Médio",
     "suspeito_principal": "Flex do Conector de Carga USB-C (Extremamente exposto a líquidos na porta).",
     "causa": "Falha combinada de comunicação no barramento de sensores (SMC BSC, flags TAOP TAOC).",
-    "obs": "A origem está frequentemente associada a humidade no conector USB-C do {modelo}. Desligue o Flex de Carga da placa lógica e teste se o dispositivo estabiliza após 5 a 10 minutos."
+    "obs": "A origem está frequentemente associada a humidade no conector USB-C do {modelo}. Desligue o Flex de Carga da placa lógica e teste se o dispositivo estabiliza."
   },
   {
     "erro": "0x200000",
@@ -182,6 +182,15 @@
     "risco": "Alto",
     "causa": "Falha de comunicação com o Giroscópio na placa inferior.",
     "obs": "Exige microsoldadura. Problema característico do {modelo}."
+  },
+  {
+    "erro": "DCP PANIC",
+    "modelos": ["TODOS"],
+    "periferico": "Ecrã (Display) ou Flex do Ecrã",
+    "risco": "Médio",
+    "suspeito_principal": "Ecrã (Falha de comunicação MIPI / Hardware do Painel).",
+    "causa": "Esgotamento de tempo (Timeout) na comunicação entre a CPU e o co-processador de imagem (DCP).",
+    "obs": "No {modelo}, o erro DCP PANIC indica que o hardware do ecrã não respondeu aos comandos. Teste com um ecrã novo de qualidade original."
   },
   {
     "erro": "TH0A",
