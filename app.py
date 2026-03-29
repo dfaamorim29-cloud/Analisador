@@ -3,7 +3,6 @@ import json
 import os
 import re
 
-# Configuração da Página
 st.set_page_config(page_title="iPhone & CIA - Diagnóstico", page_icon="📱")
 
 st.title("iPhone & CIA")
@@ -14,63 +13,67 @@ def carregar_padroes():
     if os.path.exists('padroes.json'):
         try:
             with open('padroes.json', 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except:
-            return {}
-    return {}
+                return json.load(f) # Agora carrega uma Lista de erros
+        except: return []
+    return []
 
-arquivo = st.file_uploader("Arraste o log Panic Full aqui", type=["ips", "txt"], key="analise_precisa")
+arquivo = st.file_uploader("Arraste o log Panic Full aqui", type=["ips", "txt"], key="analise_v4")
 
 if arquivo:
     conteudo = arquivo.read().decode("utf-8")
     padroes = carregar_padroes()
     
-    # 1. Extração do Modelo e Data
+    # Extração de Dados e Identificação de TODOS os modelos
     data_match = re.search(r'"date"\s*:\s*"([^"]+)"', conteudo)
     data_log = data_match.group(1)[:19] if data_match else "Desconhecida"
     modelo_match = re.search(r'"product"\s*:\s*"([^"]+)"', conteudo)
     mod_tec = modelo_match.group(1) if modelo_match else "Desconhecido"
     
     MODELOS = {
+        "iPhone11,2": "iPhone XS", "iPhone11,4": "iPhone XS Max", "iPhone11,6": "iPhone XS Max", "iPhone11,8": "iPhone XR",
         "iPhone12,1": "iPhone 11", "iPhone12,3": "iPhone 11 Pro", "iPhone12,5": "iPhone 11 Pro Max",
         "iPhone13,1": "iPhone 12 Mini", "iPhone13,2": "iPhone 12", "iPhone13,3": "iPhone 12 Pro", "iPhone13,4": "iPhone 12 Pro Max",
+        "iPhone14,4": "iPhone 13 Mini", "iPhone14,5": "iPhone 13", "iPhone14,2": "iPhone 13 Pro", "iPhone14,3": "iPhone 13 Pro Max",
         "iPhone14,7": "iPhone 14", "iPhone14,8": "iPhone 14 Plus", "iPhone15,2": "iPhone 14 Pro", "iPhone15,3": "iPhone 14 Pro Max",
-        "iPhone15,4": "iPhone 15", "iPhone15,5": "iPhone 15 Plus", "iPhone16,1": "iPhone 15 Pro", "iPhone16,2": "iPhone 15 Pro Max"
+        "iPhone15,4": "iPhone 15", "iPhone15,5": "iPhone 15 Plus", "iPhone16,1": "iPhone 15 Pro", "iPhone16,2": "iPhone 15 Pro Max",
+        "iPhone17,1": "iPhone 16 Pro", "iPhone17,2": "iPhone 16 Pro Max", "iPhone17,3": "iPhone 16", "iPhone17,4": "iPhone 16 Plus",
+        "iPhone18,1": "iPhone 17 Pro", "iPhone18,2": "iPhone 17 Pro Max"
     }
     modelo_comercial = MODELOS.get(mod_tec, mod_tec)
-
-    # 2. ISOLAR A PANIC STRING (Onde o erro real reside)
-    # Vamos pegar apenas os primeiros 2000 caracteres do log onde o erro principal é descrito
-    area_do_erro = conteudo[:2000].upper() 
-
     st.info(f"📱 **Aparelho:** {modelo_comercial}  |  📅 **Data do Log:** {data_log}")
+
+    area_do_erro = conteudo[:3000].upper()
+    encontrado = None
     
-    falha_encontrada = None
-
-    # 3. BUSCA DE PRECISÃO (Para apenas no primeiro erro relevante encontrado)
-    for erro, info in padroes.items():
-        if erro.upper() in area_do_erro:
-            falha_encontrada = (erro, info)
-            break # PARA A BUSCA AQUI para não mostrar múltiplos resultados
-
-    # 4. EXIBIÇÃO DOS 4 ITENS (Apenas se encontrou algo)
-    if falha_encontrada:
-        erro, info = falha_encontrada
-        st.error(f"🚨 **Falha Detectada:** {erro}")
+    # Busca com inteligência de modelos
+    for item in padroes:
+        erro = item.get("erro", "")
+        modelos_alvo = item.get("modelos", ["TODOS"])
         
+        # Se achou o erro no log
+        if erro.upper() in area_do_erro:
+            # E se o modelo bater com a lista (ou servir para todos)
+            if "TODOS" in modelos_alvo or any(m in modelo_comercial for m in modelos_alvo):
+                if erro.startswith("0x"):
+                    encontrado = item
+                    break # Prioridade para códigos 0x
+                elif not encontrado:
+                    encontrado = item # Salva textos normais, mas continua procurando 0x
+
+    if encontrado:
+        # Troca a tag {modelo} pelo nome real do aparelho!
+        dica_formatada = encontrado.get('obs', 'N/A').replace("{modelo}", modelo_comercial)
+        
+        st.error(f"🚨 **Falha Detectada:** {encontrado['erro']}")
         c1, c2 = st.columns(2)
         with c1:
             st.write("**🔌 Periférico Alvo:**")
-            st.subheader(info.get('periferico', 'Verificar'))
-        
+            st.subheader(encontrado.get('periferico', 'N/A'))
         with c2:
             st.write("**🛠 Causa:**")
-            st.write(info.get('causa', 'N/A'))
+            st.write(encontrado.get('causa', 'N/A'))
         
-        st.success(f"**💡 Dica do Chefinho:**\n\n{info.get('obs', 'N/A')}")
+        st.success(f"**💡 Dica do Chefinho:**\n\n{dica_formatada}")
     else:
-        st.warning("⚠️ Padrão não identificado. O log parece não conter erros conhecidos na área principal.")
-        with st.expander("Ver log completo"):
-            st.text(conteudo)
-    
+        st.warning("⚠️ Padrão não identificado para este modelo.")
     st.write("---")
