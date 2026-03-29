@@ -3,6 +3,7 @@ import json
 import os
 import re
 import urllib.parse
+from datetime import datetime
 
 st.set_page_config(page_title="iPhone & CIA - Diagnóstico Pro", page_icon="📱")
 
@@ -20,17 +21,40 @@ st.title(" iPhone & CIA")
 st.write("### Analisador de Hardware de Alta Precisão 👨‍🔧")
 st.write("---")
 
+# --- FUNÇÕES DE DADOS E HISTÓRICO ---
 def carregar_padroes():
     if os.path.exists('padroes.json'):
         try:
             with open('padroes.json', 'r', encoding='utf-8') as f:
                 return json.load(f)
         except Exception as e:
-            st.error(f"Erro no ficheiro padroes.json: {e}")
             return []
     return []
 
-arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v19")
+def registrar_uso(modelo, diagnostico):
+    arquivo_historico = 'historico_uso.json'
+    historico = []
+    
+    if os.path.exists(arquivo_historico):
+        try:
+            with open(arquivo_historico, 'r', encoding='utf-8') as f:
+                historico = json.load(f)
+        except: pass
+        
+    agora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    historico.append({
+        "Data/Hora": agora,
+        "Aparelho": modelo,
+        "Diagnóstico": diagnostico
+    })
+    
+    try:
+        with open(arquivo_historico, 'w', encoding='utf-8') as f:
+            json.dump(historico, f, indent=4, ensure_ascii=False)
+    except: pass
+
+# --- MOTOR DE ANÁLISE ---
+arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v20")
 
 if arquivo:
     conteudo = arquivo.read().decode("utf-8")
@@ -52,11 +76,9 @@ if arquivo:
     }
     modelo_comercial = MODELOS.get(mod_tec, mod_tec)
     
-    # 1. Expandimos a busca para garantir que lê defeitos de Ecrã (DCP)
     area_do_erro = conteudo[:30000].upper()
     
-    # 2. O SEGREDO ANTI-FALSO POSITIVO:
-    # Cortamos a lista de drivers do sistema (Kexts) para ele não ler o "AppleANS2" ou outros processos normais.
+    # Filtro Anti-Kext (Bloqueia falsos positivos como a NAND)
     if "LAST LOADED KEXT" in area_do_erro:
         area_do_erro = area_do_erro.split("LAST LOADED KEXT")[0]
     elif "LOADED KEXTS" in area_do_erro:
@@ -113,7 +135,38 @@ if arquivo:
         st.success(f"**💡 Dica do Chefinho:**\n\n{dica}")
     else:
         st.warning("⚠️ Padrão não identificado. Envie para o Chefinho.")
+        
+    # Salva no histórico silenciosamente (evita salvar duplicado se a pessoa clicar em algo na tela)
+    if "log_registrado" not in st.session_state or st.session_state.log_registrado != arquivo.name:
+        resultado_texto = encontrado['erro'] if encontrado else "Não Identificado"
+        registrar_uso(modelo_comercial, resultado_texto)
+        st.session_state.log_registrado = arquivo.name
 
     st.write("---")
     email_dest = "dfaamorim29@gmail.com"
     st.markdown(f'<a href="mailto:{email_dest}?subject=LOG%20REJEITADO%20-{modelo_comercial}" style="background-color: #007AFF; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">📧 Enviar log para o Chefinho</a>', unsafe_allow_html=True)
+
+# --- ÁREA SECRETA DO CHEFINHO ---
+st.write("")
+st.write("")
+st.write("")
+with st.expander("🔒"): # O emoji discreto no fundo da tela
+    senha = st.text_input("Chave de Acesso:", type="password")
+    if senha == "iphoneecia": # A SUA SENHA AQUI
+        st.success("Acesso Liberado!")
+        st.write("### 📊 Histórico de Utilização")
+        
+        if os.path.exists('historico_uso.json'):
+            try:
+                with open('historico_uso.json', 'r', encoding='utf-8') as f:
+                    dados_historico = json.load(f)
+                
+                if dados_historico:
+                    st.metric("Total de Análises Realizadas", len(dados_historico))
+                    st.dataframe(dados_historico, use_container_width=True)
+                else:
+                    st.info("Nenhuma análise registada ainda.")
+            except:
+                st.error("Erro ao ler o histórico.")
+        else:
+            st.info("O ficheiro de histórico ainda não foi criado (faça a primeira análise).")
