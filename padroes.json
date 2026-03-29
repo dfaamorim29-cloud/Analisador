@@ -9,16 +9,183 @@
     "obs": "No {modelo}, o erro DCP PANIC indica que o hardware do ecrã não respondeu aos comandos. Teste com um ecrã novo de qualidade original. Verifique o conector FPC e possíveis oxidações nas linhas MIPI. Se for isolado, desconsidere."
   },
   {
+    "erro": "0xC0000",
+    "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max"],
+    "periferico": "Flex de Carga ou Bobina MagSafe",
+    "risco": "Médio",
+    "suspeito_principal": "Flex do Conector de Carga (Mais vulnerável a oxidação na porta inferior).",
+    "causa": "Curto no barramento partilhado (Soma de 0x40000 + 0x80000).",
+    "obs": "No {modelo}, existe um curto a bloquear a linha. Comece por desconectar o Flex de Carga inferior. Se estabilizar após 5-10 min, troque a peça."
+  },
+  {
+    "erro": "0x80000",
+    "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max"],
+    "periferico": "Flex da Bobina MagSafe",
+    "risco": "Médio",
+    "suspeito_principal": "Flex da Bobina MagSafe (Wireless Charging Coil).",
+    "causa": "Falha no sensor térmico da bobina Wireless.",
+    "obs": "No {modelo}, o código 0x80000 indica falha direta na bobina MagSafe. Comum após troca de vidro traseiro ou queda."
+  },
+  {
+    "erro": "0x40000",
+    "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max"],
+    "periferico": "Flex do Conector de Carga (Dock)",
+    "risco": "Médio",
+    "suspeito_principal": "Flex do Conector de Carga (Dock Flex).",
+    "causa": "Falha de comunicação no barramento de sensores do conector de carga.",
+    "obs": "No {modelo}, o código 0x40000 aponta para o Flex de Carga. Verifique oxidação ou humidade na porta inferior."
+  },
+  {
     "erro": "0x400000",
-    "modelos": ["iPhone 15 Pro", "iPhone 16 Pro", "iPhone 15 Pro Max", "iPhone 16 Pro Max"],
+    "modelos": ["iPhone 15 Pro", "iPhone 16 Pro", "iPhone 15 Pro Max", "iPhone 16 Pro Max", "iPhone 17 Pro", "iPhone 17 Pro Max"],
     "periferico": "Flex da Bobina de Carregamento / MagSafe",
     "risco": "Médio",
     "causa": "Falha de comunicação (SMC BSC failure, flag TAOJ) nos sensores da bobina MagSafe.",
     "obs": "No {modelo}, o código 0x400000 (decimal 4194304) aponta para a bobina MagSafe. Desconecte o flex e teste por 5-10 min."
   },
   {
+    "erro": "0x400000",
+    "modelos": ["iPhone 14", "iPhone 14 Plus"],
+    "periferico": "Flex de Carga ou MagSafe",
+    "risco": "Médio",
+    "causa": "Falha de barramento SMC em periféricos traseiros.",
+    "obs": "No {modelo}, desconecte primeiro o dock de carga e depois a bobina MagSafe para isolar o curto."
+  },
+  {
+    "erro": "0x500000",
+    "modelos": ["iPhone 14", "iPhone 14 Plus"],
+    "periferico": "Bateria, Flex de Carga ou Taptic",
+    "risco": "Médio",
+    "suspeito_principal": "Bateria (Sempre a primeira a ser isolada neste código).",
+    "causa": "Falha de comunicação no barramento SMC BSC.",
+    "obs": "No {modelo}, se a bateria não resolver, desligue o Flex de Carga e o Taptic Engine para ver se estabiliza. Teste com bateria original."
+  },
+  {
+    "erro": "0x700000",
+    "modelos": ["iPhone 15 Pro", "iPhone 15 Pro Max", "iPhone 16 Pro", "iPhone 16 Pro Max"],
+    "periferico": "Flex do Conector de Carga (USB-C) / Wireless",
+    "risco": "Médio",
+    "suspeito_principal": "Flex do Conector de Carga USB-C (Extremamente exposto a líquidos na porta).",
+    "causa": "Falha combinada de comunicação no barramento de sensores (SMC BSC, flags TAOP TAOC).",
+    "obs": "A origem está frequentemente associada a humidade no conector USB-C do {modelo}. Desligue o Flex de Carga da placa lógica e teste se o dispositivo estabiliza após 5 a 10 minutos."
+  },
+  {
+    "erro": "0x200000",
+    "modelos": ["iPhone 14", "iPhone 15", "iPhone 16", "iPhone 17"],
+    "periferico": "Flex Wireless / Traseiro",
+    "risco": "Médio",
+    "causa": "Sensor de carregamento sem fios ausente.",
+    "obs": "Verifique se a tampa traseira do {modelo} está ligada corretamente."
+  },
+  {
+    "erro": "0x200000",
+    "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max", "iPhone 15 Pro", "iPhone 15 Pro Max", "iPhone 16 Pro", "iPhone 16 Pro Max"],
+    "periferico": "Flex de Proximidade (Ecrã)",
+    "risco": "Médio",
+    "causa": "O sistema não reconhece os sensores frontais.",
+    "obs": "Pode ser o flex do auricular ou FaceID do {modelo} desligado ou rasgado."
+  },
+  {
+    "erro": "0x100000",
+    "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max"],
+    "periferico": "Flex do Botão Power",
+    "risco": "Médio",
+    "causa": "Falha no microfone ou sensor do power.",
+    "obs": "Diferente dos outros modelos, no {modelo} este erro acusa especificamente o Flex do Botão Power."
+  },
+  {
+    "erro": "0x100000",
+    "modelos": ["iPhone 14", "iPhone 14 Plus", "iPhone 15", "iPhone 15 Plus", "iPhone 16", "iPhone 16 Plus"],
+    "periferico": "Flex de Carga (Dock)",
+    "risco": "Médio",
+    "causa": "Falha de sensor no conector inferior.",
+    "obs": "Troque o dock de carga do {modelo} por um original."
+  },
+  {
+    "erro": "0x300000",
+    "modelos": ["iPhone 15 Pro", "iPhone 15 Pro Max", "iPhone 16 Pro", "iPhone 16 Pro Max"],
+    "periferico": "Flex de Carga USB-C",
+    "risco": "Médio",
+    "causa": "Falha de leitura na porta de carga.",
+    "obs": "Teste com um flex original do {modelo}. Comum falhar se houver humidade na porta USB-C."
+  },
+  {
+    "erro": "0x600000",
+    "modelos": ["iPhone 16 Pro", "iPhone 16 Pro Max"],
+    "periferico": "Proximidade + Wireless",
+    "risco": "Médio",
+    "suspeito_principal": "Flex de Proximidade (Mais vulnerável à entrada de suor pela grelha superior).",
+    "causa": "O sistema não deteta o sensor do ecrã e a bobina traseira simultaneamente.",
+    "obs": "No {modelo}, comece por isolar o flex de proximidade, que é o causador mais frequente de curtos partilhados."
+  },
+  {
+    "erro": "0x600000",
+    "modelos": ["iPhone 17 Pro", "iPhone 17 Pro Max"],
+    "periferico": "Flex de Carga + Sensor de Ar",
+    "risco": "Médio",
+    "suspeito_principal": "Flex de Carga (Os pinos de carregamento oxidam e bloqueiam ambos os sensores).",
+    "causa": "Falha de comunicação conjunta.",
+    "obs": "O {modelo} exige que o sensor de pressão de ar esteja funcional junto com o dock de carga."
+  },
+  {
+    "erro": "0x800000",
+    "modelos": ["iPhone 17 Pro", "iPhone 17 Pro Max"],
+    "periferico": "Flex de Carregamento Sem Fio",
+    "risco": "Médio",
+    "causa": "Falha na bobina traseira.",
+    "obs": "Causa reinício a cada 3 minutos no {modelo}. Comum após quedas fortes ou troca de vidro traseiro."
+  },
+  {
+    "erro": "0xa1",
+    "modelos": ["iPhone 15", "iPhone 15 Pro", "iPhone 16", "iPhone 16 Pro", "iPhone 17", "iPhone 17 Pro"],
+    "periferico": "Bateria",
+    "risco": "Baixo",
+    "causa": "Erro de leitura dos dados da bateria.",
+    "obs": "No {modelo}, este erro causa reinício a cada 3 minutos. Verifique a pinagem do conector na placa e teste com bateria original."
+  },
+  {
+    "erro": "0xa9",
+    "modelos": ["iPhone 16", "iPhone 16 Pro", "iPhone 17", "iPhone 17 Pro"],
+    "periferico": "Circuito de Bateria (Placa)",
+    "risco": "Alto",
+    "causa": "Falha na comunicação I2C da bateria.",
+    "obs": "Verifique os resistores de pull-up perto do conector da bateria na placa do {modelo}."
+  },
+  {
+    "erro": "0x1000",
+    "modelos": ["iPhone 13", "iPhone 13 Mini", "iPhone 13 Pro", "iPhone 13 Pro Max"],
+    "periferico": "Flex de Proximidade (Ecrã)",
+    "risco": "Médio",
+    "causa": "Falha no conjunto de sensores do auricular.",
+    "obs": "Verifique se o flex do auricular do {modelo} está bem encaixado ou se há oxidação."
+  },
+  {
+    "erro": "0x800",
+    "modelos": ["iPhone 13", "iPhone 13 Mini", "iPhone 13 Pro", "iPhone 13 Pro Max"],
+    "periferico": "Flex de Carga (Dock)",
+    "risco": "Médio",
+    "causa": "Falha de comunicação no conector de carga.",
+    "obs": "Substitua o Flex de Carga do {modelo}."
+  },
+  {
+    "erro": "0x4000",
+    "modelos": ["iPhone 13", "iPhone 13 Mini", "iPhone 13 Pro", "iPhone 13 Pro Max"],
+    "periferico": "Bateria (Linha de Dados)",
+    "risco": "Baixo",
+    "causa": "Erro de leitura da percentagem ou autenticidade.",
+    "obs": "Pode causar mensagem de peça desconhecida no {modelo}. Verifique o conector FPC."
+  },
+  {
+    "erro": "0x400",
+    "modelos": ["iPhone 13 Mini"],
+    "periferico": "Placa Lógica (Bottom Board)",
+    "risco": "Alto",
+    "causa": "Falha de comunicação com o Giroscópio na placa inferior.",
+    "obs": "Exige microsoldadura. Problema característico do {modelo}."
+  },
+  {
     "erro": "TH0A",
-    "modelos": ["iPhone 12", "iPhone 12 Pro", "iPhone 12 Pro Max"],
+    "modelos": ["iPhone 12", "iPhone 12 Pro", "iPhone 12 Pro Max", "iPhone 12 Mini"],
     "periferico": "Placa Lógica (CPU)",
     "risco": "Alto",
     "causa": "Falha crítica de sensores térmicos na placa.",
@@ -29,6 +196,7 @@
     "modelos": ["TODOS"],
     "periferico": "Flex do Botão Power ou Flex de Carga",
     "risco": "Médio",
+    "suspeito_principal": "Flex do Botão Power (Frequentemente afetado por humidade).",
     "causa": "Pânico 'Kernel data abort' por falha de sensores térmicos.",
     "obs": "No {modelo}, desconecte o Power e teste. Se persistir, desconecte o Flex de Carga. Padrão de oxidação."
   },
@@ -40,5 +208,78 @@
     "suspeito_principal": "Flex de Proximidade (Auricular / Face ID).",
     "causa": "Falha no barramento I2C compartilhado.",
     "obs": "Como os 3 flexes partilham a mesma via no {modelo}, desligue o de Proximidade primeiro para teste."
+  },
+  {
+    "erro": "RootDomainUserClient",
+    "modelos": ["TODOS"],
+    "periferico": "Bateria ou PMIC",
+    "risco": "Baixo/Médio",
+    "suspeito_principal": "Bateria (Degradação Química).",
+    "causa": "Busy Timeout - Bloqueio na gestão de energia do sistema.",
+    "obs": "No {modelo}, inicie o diagnóstico com uma bateria nova e original. Se persistir, verifique o PMIC."
+  },
+  {
+    "erro": "mic2",
+    "modelos": ["iPhone 11", "iPhone 11 Pro", "iPhone 11 Pro Max"],
+    "periferico": "Flex do Botão Power",
+    "risco": "Médio",
+    "causa": "Falha no microfone secundário ou sensor térmico.",
+    "obs": "O {modelo} reinicia se não detetar o mic2. Comum após queda ou troca de vidro traseiro."
+  },
+  {
+    "erro": "Prs0",
+    "modelos": ["TODOS"],
+    "periferico": "Flex de Carga (Barômetro)",
+    "risco": "Médio",
+    "causa": "Falha no sensor de pressão atmosférica.",
+    "obs": "Geralmente resolvido trocando o Flex de Carga do {modelo}."
+  },
+  {
+    "erro": "Mic1",
+    "modelos": ["TODOS"],
+    "periferico": "Flex de Carga (Microfone Principal)",
+    "risco": "Médio",
+    "causa": "Falha no microfone inferior.",
+    "obs": "Verifique sujidade ou danos no flex de carga do {modelo} após reparações de carcaça."
+  },
+  {
+    "erro": "TG0B",
+    "modelos": ["TODOS"],
+    "periferico": "Bateria",
+    "risco": "Baixo",
+    "causa": "Sensor de temperatura da bateria (Battery Gauge).",
+    "obs": "Troque a bateria do {modelo} ou verifique a integridade dos pinos centrais do conector FPC."
+  },
+  {
+    "erro": "TG0V",
+    "modelos": ["TODOS"],
+    "periferico": "Bateria / Linha PMU",
+    "risco": "Baixo/Médio",
+    "causa": "Falha na leitura de voltagem da bateria.",
+    "obs": "Teste com outra bateria original no {modelo} ou verifique a linha PMU_TO_BATTERY_SWI."
+  },
+  {
+    "erro": "Eiger",
+    "modelos": ["iPhone 12", "iPhone 12 Mini", "iPhone 12 Pro", "iPhone 12 Pro Max"],
+    "periferico": "Flex de Carga (Dock)",
+    "risco": "Médio",
+    "causa": "Falha de identificação do Flex de Carga.",
+    "obs": "A linha do {modelo} é muito sensível a componentes paralelos. Use um flex original."
+  },
+  {
+    "erro": "Thermal Monitor",
+    "modelos": ["TODOS"],
+    "periferico": "Flex de Carga ou Power Flex",
+    "risco": "Médio",
+    "causa": "O sistema não detetou um sensor de temperatura (termistor).",
+    "obs": "Troque o Dock de Carga ou o Flex do Power do {modelo}."
+  },
+  {
+    "erro": "SMC Panic",
+    "modelos": ["TODOS"],
+    "periferico": "Bateria ou Setor de Carga (Placa)",
+    "risco": "Baixo/Médio",
+    "causa": "Falha genérica de comunicação com o controlador de energia.",
+    "obs": "Verifique o conector FPC do {modelo}. Em logs de SMC, comece sempre por testar uma bateria nova."
   }
 ]
