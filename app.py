@@ -30,7 +30,7 @@ def carregar_padroes():
             return []
     return []
 
-arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v17")
+arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v18")
 
 if arquivo:
     conteudo = arquivo.read().decode("utf-8")
@@ -52,7 +52,6 @@ if arquivo:
     }
     modelo_comercial = MODELOS.get(mod_tec, mod_tec)
     
-    # Busca alargada para evitar perder dados
     area_do_erro = conteudo[:25000].upper()
     
     encontrado = None
@@ -67,19 +66,23 @@ if arquivo:
             if not erro_id.startswith("0X") and erro_id in area_do_erro:
                 achou = True
             elif erro_id.startswith("0X"):
-                if erro_id in area_do_erro:
+                # 1. Busca Hexadecimal com Boundary (evita achar 0x40 dentro de 0xfffffff040b18eac)
+                if re.search(r'\b' + erro_id + r'\b', area_do_erro):
                     achou = True
                 else:
+                    # 2. Busca Decimal blindada
                     try:
-                        dec_val = str(int(erro_id, 16))
-                        if re.search(r'\b' + dec_val + r'\b', area_do_erro):
-                            achou = True
+                        dec_num = int(erro_id, 16)
+                        # Só faz a busca decimal se for um número superior a 10.000 (SMC Panics).
+                        # Impede que os códigos 0x20 e 0x40 batam com "32" bits ou "64" bits escritos no texto.
+                        if dec_num > 10000: 
+                            if re.search(r'\b' + str(dec_num) + r'\b', area_do_erro):
+                                achou = True
                     except: pass
             
             if achou:
                 matches_possiveis.append(item)
 
-    # A MAGIA ACONTECE AQUI: Ordena os erros por prioridade (Peso 1 é mais forte que Peso 2)
     if matches_possiveis:
         matches_possiveis.sort(key=lambda x: x.get("peso", 99))
         encontrado = matches_possiveis[0]
