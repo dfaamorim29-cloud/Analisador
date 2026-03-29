@@ -6,7 +6,6 @@ import urllib.parse
 
 st.set_page_config(page_title="iPhone & CIA - Diagnóstico Pro", page_icon="📱", layout="wide")
 
-# Interface Profissional em Português
 st.markdown("""
     <style>
     [data-testid="stFileUploadDropzone"] > div > div > span { display: none; }
@@ -31,19 +30,17 @@ def carregar_padroes():
             return []
     return []
 
-arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v14")
+arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v15")
 
 if arquivo:
     conteudo = arquivo.read().decode("utf-8")
     padroes = carregar_padroes()
     
-    # Extração de Dados
     data_match = re.search(r'"date"\s*:\s*"([^"]+)"', conteudo)
     data_log = data_match.group(1)[:19] if data_match else "Desconhecida"
     modelo_match = re.search(r'"product"\s*:\s*"([^"]+)"', conteudo)
     mod_tec = modelo_match.group(1) if modelo_match else "Desconhecido"
     
-    # Dicionário de Modelos Expandido
     MODELOS = {
         "iPhone11,2": "iPhone XS", "iPhone11,4": "iPhone XS Max", "iPhone11,6": "iPhone XS Max", "iPhone11,8": "iPhone XR",
         "iPhone12,1": "iPhone 11", "iPhone12,3": "iPhone 11 Pro", "iPhone12,5": "iPhone 11 Pro Max",
@@ -55,7 +52,7 @@ if arquivo:
     }
     modelo_comercial = MODELOS.get(mod_tec, mod_tec)
     
-    # Janela de busca ampliada para 20.000 caracteres (Logs do iOS 18 são maiores)
+    # Janela de busca ampla (20.000 caracteres)
     area_do_erro = conteudo[:20000].upper()
     
     encontrado = None
@@ -67,20 +64,24 @@ if arquivo:
         
         if "TODOS" in modelos_alvo or any(m in modelo_comercial for m in modelos_alvo):
             achou = False
-            # Busca por String, Hex ou Decimal
-            if erro_id in area_do_erro:
+            if not erro_id.startswith("0X") and erro_id in area_do_erro:
                 achou = True
             elif erro_id.startswith("0X"):
-                try:
-                    dec_val = str(int(erro_id, 16))
-                    if dec_val in area_do_erro:
-                        achou = True
-                except: pass
+                # Busca Hexadecimal Exata
+                if erro_id in area_do_erro:
+                    achou = True
+                else:
+                    # Busca Decimal Exata (A Trava de Segurança)
+                    try:
+                        dec_val = str(int(erro_id, 16))
+                        if re.search(r'\b' + dec_val + r'\b', area_do_erro):
+                            achou = True
+                    except: pass
             
             if achou:
                 matches_possiveis.append(item)
 
-    # Prioridade 1: Erros Críticos (DCP, AOP, Hexadecimais)
+    # Ordenar por prioridade (Hexadecimal, DCP e AOP primeiro para evitar falsos positivos)
     for m in matches_possiveis:
         e = m["erro"].upper()
         if e.startswith("0X") or "DCP" in e or "AOP" in e:
