@@ -1,6 +1,6 @@
 [
   {
-    "erro": "Th0a Th0x",
+    "erro": "TH0A",
     "modelos": ["iPhone 12", "iPhone 12 Pro", "iPhone 12 Pro Max", "iPhone 12 Mini"],
     "periferico": "Placa Lógica (CPU / Linhas de Alimentação)",
     "causa": "Falta de comunicação dos sensores térmicos Th0a e Th0x com o processador (Watchdog Timeout).",
@@ -60,7 +60,7 @@
     "modelos": ["iPhone 15 Pro", "iPhone 15 Pro Max", "iPhone 16 Pro", "iPhone 16 Pro Max"],
     "periferico": "Flex de Carga USB-C",
     "causa": "Falha de leitura na porta de carga.",
-    "obs": "Teste com um flex original do {modelo}. Comum falhar se houver umidade na porta USB-C."
+    "obs": "Teste com um flex original do {modelo}. Comum falhar se houver humidade na porta USB-C."
   },
   {
     "erro": "0x600000",
@@ -88,7 +88,7 @@
     "modelos": ["iPhone 15", "iPhone 15 Pro", "iPhone 16", "iPhone 16 Pro", "iPhone 17", "iPhone 17 Pro"],
     "periferico": "Bateria",
     "causa": "Erro de leitura dos dados da bateria.",
-    "obs": "No {modelo}, esse erro causa reinício a cada 3 minutos. Cheque a pinagem do conector na placa e teste com bateria original."
+    "obs": "No {modelo}, esse erro causa reinício a cada 3 minutos. Verifique a pinagem do conector na placa e teste com bateria original."
   },
   {
     "erro": "0xa9",
@@ -115,7 +115,7 @@
     "erro": "0x4000",
     "modelos": ["iPhone 13", "iPhone 13 Mini", "iPhone 13 Pro", "iPhone 13 Pro Max"],
     "periferico": "Bateria (Linha de Dados)",
-    "causa": "Erro de leitura da porcentagem ou autenticidade.",
+    "causa": "Erro de leitura da percentagem ou autenticidade.",
     "obs": "Pode causar mensagem de peça desconhecida no {modelo}. Verifique o conector FPC."
   },
   {
@@ -123,28 +123,28 @@
     "modelos": ["iPhone 13 Mini"],
     "periferico": "Placa Lógica (Bottom Board)",
     "causa": "Falha de comunicação com o Giroscópio na placa inferior.",
-    "obs": "Exige microsoldagem. Problema característico do {modelo}."
+    "obs": "Exige microsoldadura. Problema característico do {modelo}."
   },
   {
     "erro": "mic2",
     "modelos": ["iPhone 11", "iPhone 11 Pro", "iPhone 11 Pro Max"],
     "periferico": "Flex do Botão Power",
     "causa": "Falha no microfone secundário ou sensor térmico.",
-    "obs": "O {modelo} reinicia se não detectar o mic2. Comum após queda ou troca de vidro traseiro."
+    "obs": "O {modelo} reinicia se não detetar o mic2. Comum após queda ou troca de vidro traseiro."
   },
   {
     "erro": "Prs0",
     "modelos": ["TODOS"],
     "periferico": "Flex de Carga (Barômetro)",
     "causa": "Falha no sensor de pressão atmosférica.",
-    "obs": "Geralmente resolvido trocando o Flex de Carga. Em um aparelho como o {modelo}, é a solução mais rápida."
+    "obs": "Geralmente resolvido trocando o Flex de Carga. Num aparelho como o {modelo}, é a solução mais rápida."
   },
   {
     "erro": "Mic1",
     "modelos": ["TODOS"],
     "periferico": "Flex de Carga (Microfone Principal)",
     "causa": "Falha no microfone inferior.",
-    "obs": "Verifique sujeira ou danos no flex de carga do {modelo} após reparos de carcaça."
+    "obs": "Verifique sujidade ou danos no flex de carga do {modelo} após reparações de carcaça."
   },
   {
     "erro": "TG0B",
@@ -171,7 +171,7 @@
     "erro": "Thermal Monitor",
     "modelos": ["TODOS"],
     "periferico": "Flex de Carga ou Power Flex",
-    "causa": "O sistema não detectou um sensor de temperatura (termistor).",
+    "causa": "O sistema não detetou um sensor de temperatura (termistor).",
     "obs": "Troque o Dock de Carga ou o Flex do Power do {modelo}."
   },
   {
@@ -185,4 +185,7 @@
     "erro": "AOP PANIC",
     "modelos": ["TODOS"],
     "periferico": "Proximity Flex, Charge Flex ou Coil Flex",
-    "causa": "Falha na leitura de sensores via
+    "causa": "Falha na leitura de sensores via barramento I2C/SMC.",
+    "obs": "Possível oxidação interna no {modelo}. Verifique a leitura dos sensores em cada flex."
+  }
+]
