@@ -1,82 +1,72 @@
-{
-  "AOP PANIC": {
-    "periferico": "Proximity Flex, Charge Flex ou Coil Flex",
-    "causa": "Falha na leitura de sensores via barramento I2C/SMC.",
-    "obs": "No iPhone 14 Plus, verifique oxidação interna. Se for um log isolado, pode ser erro de leitura temporário."
+[
+  {
+    "erro": "0x500000",
+    "modelos": ["iPhone 14", "iPhone 14 Plus"],
+    "periferico": "Bateria, Flex de Carga ou Taptic",
+    "causa": "Falha no barramento SMC BSC.",
+    "obs": "No {modelo}, desconecte o Flex de Carga e o Taptic Engine para ver se estabiliza. Teste com bateria original."
   },
-  "mic2": {
-    "periferico": "Flex do Botão Power",
-    "causa": "Falha no microfone secundário ou sensor térmico do flex power.",
-    "obs": "O iPhone 11 reinicia se não detectar o mic2. Comum após troca de vidro traseiro ou quedas."
+  {
+    "erro": "0x400000",
+    "modelos": ["iPhone 15 Pro", "iPhone 16 Pro", "iPhone 15 Pro Max", "iPhone 16 Pro Max"],
+    "periferico": "Flex Wireless (Vidro Traseiro)",
+    "causa": "Falha de comunicação com a bobina NFC/Wireless.",
+    "obs": "O {modelo} é muito sensível a falhas no flex traseiro. Comum rasgar o flex na troca do vidro."
   },
-  "0x400000": {
-    "periferico": "Flex Wireless (NFC) ou Flex de Carga",
-    "causa": "Falha de comunicação no barramento de sensores (SMC BSC).",
-    "obs": "No iPhone 14, verifique primeiro o flex de carga sem fio traseiro. É um erro clássico de reinicialização."
+  {
+    "erro": "0x200000",
+    "modelos": ["iPhone 14", "iPhone 15", "iPhone 16"],
+    "periferico": "Flex Wireless / Traseiro",
+    "causa": "Sensor de carregamento sem fio ausente.",
+    "obs": "Verifique se a tampa traseira do {modelo} está conectada corretamente."
   },
-  "SMC Panic": {
-    "periferico": "Bateria ou Setor de Carga (Placa)",
-    "causa": "Falha crítica de comunicação com o controlador de energia.",
-    "obs": "Verifique o conector FPC da bateria. Teste com uma bateria original."
-  },
-  "Thermal Monitor": {
-    "periferico": "Flex de Carga ou Power Flex",
-    "causa": "O sistema não detectou um sensor de temperatura (termistor).",
-    "obs": "Geralmente resolvido trocando o Dock de Carga ou o Flex do Power."
-  },
-  "Prs0": {
-    "periferico": "Flex de Carga (Barômetro)",
-    "causa": "Sensor de pressão atmosférica não detectado.",
-    "obs": "Substitua o Flex de Carga por um original ou de alta qualidade."
-  },
-  "Mic1": {
-    "periferico": "Flex de Carga (Microfone Principal)",
-    "causa": "Falha no microfone inferior.",
-    "obs": "Verifique se há sujeira no orifício ou se o flex foi danificado em reparos de carcaça."
-  },
-  "TG0B": {
-    "periferico": "Bateria",
-    "causa": "Sensor de temperatura da bateria (Battery Gauge).",
-    "obs": "Verifique os pinos centrais do conector da bateria na placa."
-  },
-  "0x1000": {
+  {
+    "erro": "0x200000",
+    "modelos": ["iPhone 14 Pro", "iPhone 15 Pro", "iPhone 16 Pro"],
     "periferico": "Flex de Proximidade (Tela)",
-    "causa": "Falha no conjunto de sensores do auricular.",
-    "obs": "Comum em iPhones com dano por líquido no topo da tela."
+    "causa": "O sistema não reconhece os sensores frontais.",
+    "obs": "Pode ser o flex do auricular ou FaceID do {modelo} desplugado ou rasgado."
   },
-  "0x800": {
+  {
+    "erro": "0x100000",
+    "modelos": ["iPhone 14 Pro", "iPhone 14 Pro Max"],
+    "periferico": "Flex do Botão Power",
+    "causa": "Falha no microfone do power.",
+    "obs": "Diferente dos outros modelos, no {modelo} este erro acusa especificamente o Flex do Botão Power."
+  },
+  {
+    "erro": "0x100000",
+    "modelos": ["iPhone 14", "iPhone 15", "iPhone 16"],
     "periferico": "Flex de Carga (Dock)",
-    "causa": "Falha de comunicação no conector de carga.",
-    "obs": "Teste com um dock novo sem fechar o aparelho totalmente."
+    "causa": "Falha de sensor no conector inferior.",
+    "obs": "Troque o dock de carga do {modelo} por um original."
   },
-  "0x4000": {
-    "periferico": "Bateria (Linha de Dados)",
-    "causa": "Erro de leitura da porcentagem ou autenticidade da bateria.",
-    "obs": "Verifique se a bateria é reconhecida pelo sistema ou se está 'Peça Desconhecida'."
+  {
+    "erro": "mic2",
+    "modelos": ["iPhone 11", "iPhone 11 Pro", "iPhone 11 Pro Max"],
+    "periferico": "Flex do Botão Power",
+    "causa": "Falha no microfone secundário ou sensor térmico.",
+    "obs": "O {modelo} reinicia se não detectar o mic2. Comum após queda ou troca de vidro."
   },
-  "0x100000": {
-    "periferico": "Flex de Carga ou Power Button",
-    "causa": "Falha de hardware em componentes de boot/energia.",
-    "obs": "Comum na linha 14 e 15 após quedas ou contato com umidade."
+  {
+    "erro": "Prs0",
+    "modelos": ["TODOS"],
+    "periferico": "Flex de Carga (Barômetro)",
+    "causa": "Falha no sensor de pressão atmosférica.",
+    "obs": "Substitua o Flex de Carga. Em qualquer aparelho como o {modelo}, isso resolve na hora."
   },
-  "0x200000": {
-    "periferico": "Flex de Proximidade ou Bobina Wireless",
-    "causa": "Sensor de presença ou carregamento sem fio ausente.",
-    "obs": "Verifique se todos os flexes da tampa traseira e tela estão plugados."
-  },
-  "0xa1": {
+  {
+    "erro": "0xa1",
+    "modelos": ["iPhone 15", "iPhone 16", "iPhone 17"],
     "periferico": "Bateria",
-    "causa": "Erro de leitura de dados (Battery Data Line).",
-    "obs": "Reinício a cada 3 minutos. Teste com uma bateria original conhecida."
+    "causa": "Erro de leitura dos dados da bateria.",
+    "obs": "No {modelo}, esse erro causa reinício a cada 3 minutos. Cheque a pinagem do conector na placa."
   },
-  "0xa9": {
-    "periferico": "Circuito de Bateria (Placa)",
-    "causa": "Falha na comunicação I2C da bateria (iPhone 16/17).",
-    "obs": "Verifique resistores de pull-up perto do conector da bateria."
-  },
-  "Eiger": {
-    "periferico": "Flex de Carga (iPhone 12)",
-    "causa": "Incompatibilidade ou falha no flex de carga.",
-    "obs": "A linha 12 é extremamente sensível a flexes paralelos. Use apenas originais."
+  {
+    "erro": "SMC Panic",
+    "modelos": ["TODOS"],
+    "periferico": "Bateria ou Setor de Carga (Placa)",
+    "causa": "Falha de comunicação com o controlador de energia.",
+    "obs": "Verifique o conector FPC do {modelo}. Se tem log de SMC, sempre comece por uma bateria nova."
   }
-}
+]
