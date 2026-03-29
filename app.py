@@ -5,7 +5,43 @@ import re
 
 st.set_page_config(page_title="iPhone & CIA - Diagnóstico", page_icon="📱")
 
-st.title("iPhone & CIA")
+# Lógica de CSS para traduzir a caixa de Upload (Drag and Drop / Browse Files)
+st.markdown("""
+    <style>
+    /* Oculta os textos em inglês originais */
+    [data-testid="stFileUploadDropzone"] > div > div > span { display: none; }
+    [data-testid="stFileUploadDropzone"] > div > div > small { display: none; }
+    
+    /* Cria o novo texto principal em Português */
+    [data-testid="stFileUploadDropzone"] > div > div::before {
+        content: "Arraste e solte o arquivo do log aqui";
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        display: block;
+    }
+    
+    /* Cria o texto de limite de ficheiro em Português */
+    [data-testid="stFileUploadDropzone"] > div > div::after {
+        content: "Arquivos suportados: .ips ou .txt (Máx: 200MB)";
+        font-size: 14px;
+        color: #808495;
+        display: block;
+    }
+    
+    /* Tradução do botão "Browse files" */
+    [data-testid="stFileUploadDropzone"] button {
+        font-size: 0px; /* Esconde o texto antigo diminuindo a fonte para zero */
+    }
+    [data-testid="stFileUploadDropzone"] button::after {
+        content: "Procurar Arquivo";
+        font-size: 14px; /* Define o tamanho do novo texto */
+        font-weight: 400;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+st.title(" iPhone & CIA")
 st.write("### Sistema de Análise do Chefinho 👨‍🔧")
 st.write("---")
 
@@ -17,7 +53,8 @@ def carregar_padroes():
         except: return []
     return []
 
-arquivo = st.file_uploader("Arraste o log Panic Full aqui", type=["ips", "txt"], key="analise_v7")
+# O título da caixa de upload agora também está em português!
+arquivo = st.file_uploader("Selecione o relatório de erro (Panic Full):", type=["ips", "txt"], key="analise_v9")
 
 if arquivo:
     conteudo = arquivo.read().decode("utf-8")
@@ -56,7 +93,7 @@ if arquivo:
         if erro_upper in area_do_erro:
             achou = True
         
-        # 2. SE FOR CÓDIGO HEXADECIMAL: Converte para número e procura
+        # 2. SE FOR CÓDIGO HEXADECIMAL: Converte para número e procura (A Magia)
         elif erro_original.lower().startswith("0x"):
             try:
                 erro_dec = str(int(erro_original, 16)) 
@@ -78,13 +115,18 @@ if arquivo:
         dica_formatada = encontrado.get('obs', 'N/A').replace("{modelo}", modelo_comercial)
         
         st.error(f"🚨 **Falha Detectada:** {encontrado['erro']}")
+        
         c1, c2 = st.columns(2)
         with c1:
-            st.write("**🔌 Periférico Alvo:**")
+            st.write("**🔌 Periféricos Suspeitos:**")
             st.subheader(encontrado.get('periferico', 'N/A'))
         with c2:
             st.write("**🛠 Causa:**")
             st.write(encontrado.get('causa', 'N/A'))
+            
+        # NOVA LÓGICA: Se houver a chave "suspeito_principal", mostra a dica de ouro!
+        if "suspeito_principal" in encontrado:
+            st.warning(f"🎯 **Alvo Principal:** {encontrado['suspeito_principal']}")
         
         st.success(f"**💡 Dica do Chefinho:**\n\n{dica_formatada}")
     else:
