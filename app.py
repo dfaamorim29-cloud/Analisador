@@ -13,17 +13,17 @@ def carregar_padroes():
     if os.path.exists('padroes.json'):
         try:
             with open('padroes.json', 'r', encoding='utf-8') as f:
-                return json.load(f) # Agora carrega uma Lista de erros
+                return json.load(f)
         except: return []
     return []
 
-arquivo = st.file_uploader("Arraste o log Panic Full aqui", type=["ips", "txt"], key="analise_v4")
+arquivo = st.file_uploader("Arraste o log Panic Full aqui", type=["ips", "txt"], key="analise_v5")
 
 if arquivo:
     conteudo = arquivo.read().decode("utf-8")
     padroes = carregar_padroes()
     
-    # Extração de Dados e Identificação de TODOS os modelos
+    # Extração de Dados
     data_match = re.search(r'"date"\s*:\s*"([^"]+)"', conteudo)
     data_log = data_match.group(1)[:19] if data_match else "Desconhecida"
     modelo_match = re.search(r'"product"\s*:\s*"([^"]+)"', conteudo)
@@ -42,26 +42,24 @@ if arquivo:
     modelo_comercial = MODELOS.get(mod_tec, mod_tec)
     st.info(f"📱 **Aparelho:** {modelo_comercial}  |  📅 **Data do Log:** {data_log}")
 
-    area_do_erro = conteudo[:3000].upper()
+    # Aumento da área de leitura para 6000 caracteres para garantir que não corta erros
+    area_do_erro = conteudo[:6000].upper()
     encontrado = None
     
-    # Busca com inteligência de modelos
+    # Busca com inteligência
     for item in padroes:
         erro = item.get("erro", "")
         modelos_alvo = item.get("modelos", ["TODOS"])
         
-        # Se achou o erro no log
         if erro.upper() in area_do_erro:
-            # E se o modelo bater com a lista (ou servir para todos)
             if "TODOS" in modelos_alvo or any(m in modelo_comercial for m in modelos_alvo):
                 if erro.startswith("0x"):
                     encontrado = item
-                    break # Prioridade para códigos 0x
+                    break 
                 elif not encontrado:
-                    encontrado = item # Salva textos normais, mas continua procurando 0x
+                    encontrado = item 
 
     if encontrado:
-        # Troca a tag {modelo} pelo nome real do aparelho!
         dica_formatada = encontrado.get('obs', 'N/A').replace("{modelo}", modelo_comercial)
         
         st.error(f"🚨 **Falha Detectada:** {encontrado['erro']}")
