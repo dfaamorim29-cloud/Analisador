@@ -17,7 +17,7 @@ def carregar_padroes():
         except: return []
     return []
 
-arquivo = st.file_uploader("Arraste o log Panic Full aqui", type=["ips", "txt"], key="analise_v5")
+arquivo = st.file_uploader("Arraste o log Panic Full aqui", type=["ips", "txt"], key="analise_v6")
 
 if arquivo:
     conteudo = arquivo.read().decode("utf-8")
@@ -42,27 +42,43 @@ if arquivo:
     modelo_comercial = MODELOS.get(mod_tec, mod_tec)
     st.info(f"📱 **Aparelho:** {modelo_comercial}  |  📅 **Data do Log:** {data_log}")
 
-    # Aumento da área de leitura para 6000 caracteres para garantir que não corta erros
     area_do_erro = conteudo[:6000].upper()
     encontrado = None
     
-    # Busca com inteligência
     for item in padroes:
-        erro = item.get("erro", "")
+        erro_original = item.get("erro", "")
+        erro_upper = erro_original.upper()
         modelos_alvo = item.get("modelos", ["TODOS"])
         
-        if erro.upper() in area_do_erro:
+        achou = False
+        
+        # 1. Tenta encontrar a palavra ou código exato (ex: 0x400000)
+        if erro_upper in area_do_erro:
+            achou = True
+        
+        # 2. SE FOR CÓDIGO HEXADECIMAL: Converte para número e procura! (A Magia acontece aqui)
+        elif erro_original.lower().startswith("0x"):
+            try:
+                erro_dec = str(int(erro_original, 16)) # Ex: Transforma 0x400000 em 4194304
+                # Busca o número decimal exato usando regex para evitar falsos positivos
+                if re.search(r'\b' + erro_dec + r'\b', area_do_erro):
+                    achou = True
+            except:
+                pass
+                
+        # Se achou de um jeito ou de outro e o modelo bate...
+        if achou:
             if "TODOS" in modelos_alvo or any(m in modelo_comercial for m in modelos_alvo):
-                if erro.startswith("0x"):
+                if erro_original.lower().startswith("0x"):
                     encontrado = item
-                    break 
+                    break # É um código exato! Para a busca e mostra este.
                 elif not encontrado:
-                    encontrado = item 
+                    encontrado = item # Salva o erro genérico mas continua a procurar se tem código específico
 
     if encontrado:
         dica_formatada = encontrado.get('obs', 'N/A').replace("{modelo}", modelo_comercial)
         
-        st.error(f"🚨 **Falha Detectada:** {encontrado['erro']}")
+        st.error(f"🚨 **Falha Detectada:** {encontrado['erro']} (Decimal convertido pelo sistema)")
         c1, c2 = st.columns(2)
         with c1:
             st.write("**🔌 Periférico Alvo:**")
