@@ -30,7 +30,7 @@ def carregar_padroes():
             return []
     return []
 
-arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v18")
+arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v19")
 
 if arquivo:
     conteudo = arquivo.read().decode("utf-8")
@@ -52,7 +52,15 @@ if arquivo:
     }
     modelo_comercial = MODELOS.get(mod_tec, mod_tec)
     
-    area_do_erro = conteudo[:25000].upper()
+    # 1. Expandimos a busca para garantir que lê defeitos de Ecrã (DCP)
+    area_do_erro = conteudo[:30000].upper()
+    
+    # 2. O SEGREDO ANTI-FALSO POSITIVO:
+    # Cortamos a lista de drivers do sistema (Kexts) para ele não ler o "AppleANS2" ou outros processos normais.
+    if "LAST LOADED KEXT" in area_do_erro:
+        area_do_erro = area_do_erro.split("LAST LOADED KEXT")[0]
+    elif "LOADED KEXTS" in area_do_erro:
+        area_do_erro = area_do_erro.split("LOADED KEXTS")[0]
     
     encontrado = None
     matches_possiveis = []
@@ -66,15 +74,11 @@ if arquivo:
             if not erro_id.startswith("0X") and erro_id in area_do_erro:
                 achou = True
             elif erro_id.startswith("0X"):
-                # 1. Busca Hexadecimal com Boundary (evita achar 0x40 dentro de 0xfffffff040b18eac)
                 if re.search(r'\b' + erro_id + r'\b', area_do_erro):
                     achou = True
                 else:
-                    # 2. Busca Decimal blindada
                     try:
                         dec_num = int(erro_id, 16)
-                        # Só faz a busca decimal se for um número superior a 10.000 (SMC Panics).
-                        # Impede que os códigos 0x20 e 0x40 batam com "32" bits ou "64" bits escritos no texto.
                         if dec_num > 10000: 
                             if re.search(r'\b' + str(dec_num) + r'\b', area_do_erro):
                                 achou = True
