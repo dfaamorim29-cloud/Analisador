@@ -1,7 +1,7 @@
 [
   {
     "erro": "ans2",
-    "peso": 1,
+    "peso": 2,
     "modelos": ["TODOS"],
     "periferico": "Placa Lógica (NAND)",
     "risco": "Alto",
@@ -341,7 +341,7 @@
   },
   {
     "erro": "AppleEmbeddedTempSensor",
-    "peso": 2,
+    "peso": 1,
     "modelos": ["TODOS"],
     "periferico": "Flex do Botão Power ou Flex de Carga",
     "risco": "Médio",
