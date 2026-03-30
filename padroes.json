@@ -10,6 +10,16 @@
     "obs": "No {modelo}, desconecte o Flex de Proximidade/ALS. (Nota técnica: Do iPhone 13 em diante, o sensor ALS fica fisicamente separado do TrueDepth). Se o aparelho estabilizar, troque o cabo. Se persistir, o defeito está na matriz do próprio ecrã (Touch); teste com um painel novo."
   },
   {
+    "erro": "SEP PANIC",
+    "peso": 1,
+    "modelos": ["TODOS"],
+    "periferico": "Chip NFC, Flex de Proximidade ou Placa Lógica",
+    "risco": "Alto",
+    "suspeito_principal": "Placa Lógica (Chip NFC / EEPROM) ou Flex de Proximidade",
+    "causa": "Colapso crítico no Secure Enclave Processor (sars/sars). Perda de acesso à memória de segurança.",
+    "obs": "No {modelo}, desconecte o Flex de Proximidade (Face ID) para descartar um curto periférico. Como a data 1969 indica reset do RTC, teste com bateria nova. Se as reinicializações persistirem, o defeito é na placa lógica (Chip NFC ou interposer). Exige microsoldadura avançada."
+  },
+  {
     "erro": "sars/sars",
     "peso": 1,
     "modelos": ["TODOS"],
