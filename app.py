@@ -54,10 +54,11 @@ def registrar_uso(modelo, diagnostico):
     except: pass
 
 # --- MOTOR DE ANÁLISE ---
-arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v20")
+arquivo = st.file_uploader("", type=["ips", "txt"], key="analise_v21")
 
 if arquivo:
-    conteudo = arquivo.read().decode("utf-8")
+    # A MÁGICA ESTÁ AQUI: errors="ignore" faz ele ler qualquer .ips sem travar!
+    conteudo = arquivo.read().decode("utf-8", errors="ignore")
     padroes = carregar_padroes()
     
     data_match = re.search(r'"date"\s*:\s*"([^"]+)"', conteudo)
@@ -136,7 +137,7 @@ if arquivo:
     else:
         st.warning("⚠️ Padrão não identificado. Envie para o Chefinho.")
         
-    # Salva no histórico silenciosamente (evita salvar duplicado se a pessoa clicar em algo na tela)
+    # Salva no histórico silenciosamente
     if "log_registrado" not in st.session_state or st.session_state.log_registrado != arquivo.name:
         resultado_texto = encontrado['erro'] if encontrado else "Não Identificado"
         registrar_uso(modelo_comercial, resultado_texto)
@@ -150,9 +151,9 @@ if arquivo:
 st.write("")
 st.write("")
 st.write("")
-with st.expander("🔒"): # O emoji discreto no fundo da tela
+with st.expander("🔒"):
     senha = st.text_input("Chave de Acesso:", type="password")
-    if senha == "iphoneecia": # A SUA SENHA AQUI
+    if senha == "iphoneecia":
         st.success("Acesso Liberado!")
         st.write("### 📊 Histórico de Utilização")
         
