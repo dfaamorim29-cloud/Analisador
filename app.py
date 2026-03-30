@@ -21,7 +21,6 @@ st.title(" iPhone & CIA")
 st.write("### Analisador de Hardware de Alta Precisão 👨‍🔧")
 st.write("---")
 
-# --- FUNÇÕES DE DADOS E HISTÓRICO ---
 def carregar_padroes():
     if os.path.exists('padroes.json'):
         try:
@@ -53,17 +52,13 @@ def registrar_uso(modelo, diagnostico):
             json.dump(historico, f, indent=4, ensure_ascii=False)
     except: pass
 
-# --- MOTOR DE ANÁLISE ---
-# REMOVIDA A RESTRIÇÃO 'type=["ips", "txt"]' PARA O iPHONE NÃO BLOQUEAR
-arquivo = st.file_uploader("", key="analise_v22")
+arquivo = st.file_uploader("", key="analise_v23")
 
 if arquivo:
-    # CRIADA A NOSSA PRÓPRIA VERIFICAÇÃO DE SEGURANÇA
     nome_arquivo = arquivo.name.lower()
     if not (nome_arquivo.endswith('.ips') or nome_arquivo.endswith('.txt')):
         st.error("⚠️ Formato inválido! Por favor, selecione apenas arquivos de log (.ips ou .txt).")
     else:
-        # A MÁGICA CONTINUA: errors="ignore" faz ele ler qualquer .ips sem travar!
         conteudo = arquivo.read().decode("utf-8", errors="ignore")
         padroes = carregar_padroes()
         
@@ -85,7 +80,6 @@ if arquivo:
         
         area_do_erro = conteudo[:30000].upper()
         
-        # Filtro Anti-Kext (Bloqueia falsos positivos como a NAND)
         if "LAST LOADED KEXT" in area_do_erro:
             area_do_erro = area_do_erro.split("LAST LOADED KEXT")[0]
         elif "LOADED KEXTS" in area_do_erro:
@@ -141,19 +135,22 @@ if arquivo:
             dica = encontrado['obs'].replace("{modelo}", modelo_comercial)
             st.success(f"**💡 Dica do Chefinho:**\n\n{dica}")
         else:
-            st.warning("⚠️ Padrão não identificado. Envie para o Chefinho.")
+            # MENSAGEM NOVA PARA QUANDO O SITE NÃO ENCONTRAR O PADRÃO
+            st.warning("⚠️ Padrão não identificado. Por favor, envie este log para o Chefinho para que ele possa fazer a correção do código e adicionar este novo defeito ao sistema.")
             
-        # Salva no histórico silenciosamente
         if "log_registrado" not in st.session_state or st.session_state.log_registrado != arquivo.name:
             resultado_texto = encontrado['erro'] if encontrado else "Não Identificado"
             registrar_uso(modelo_comercial, resultado_texto)
             st.session_state.log_registrado = arquivo.name
 
         st.write("---")
+        
+        # BOTÃO E E-MAIL ATUALIZADOS PARA A CORREÇÃO DE CÓDIGO
         email_dest = "dfaamorim29@gmail.com"
-        st.markdown(f'<a href="mailto:{email_dest}?subject=LOG%20REJEITADO%20-{modelo_comercial}" style="background-color: #007AFF; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">📧 Enviar log para o Chefinho</a>', unsafe_allow_html=True)
+        assunto = urllib.parse.quote(f"LOG PARA CORREÇÃO DE CÓDIGO - {modelo_comercial}")
+        corpo = urllib.parse.quote(f"Chefinho, o site não conseguiu analisar este arquivo do {modelo_comercial} e não encontrou o padrão. Segue em anexo para você analisar e fazer a correção do código-fonte!\n\n(Lembre-se de anexar o arquivo .ips ou .txt)")
+        st.markdown(f'<a href="mailto:{email_dest}?subject={assunto}&body={corpo}" style="background-color: #007AFF; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">📧 Enviar log para correção do código</a>', unsafe_allow_html=True)
 
-# --- ÁREA SECRETA DO CHEFINHO ---
 st.write("")
 st.write("")
 st.write("")
