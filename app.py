@@ -52,7 +52,7 @@ def registrar_uso(modelo, diagnostico):
             json.dump(historico, f, indent=4, ensure_ascii=False)
     except: pass
 
-arquivo = st.file_uploader("", key="analise_v23")
+arquivo = st.file_uploader("", key="analise_v25")
 
 if arquivo:
     nome_arquivo = arquivo.name.lower()
@@ -135,7 +135,6 @@ if arquivo:
             dica = encontrado['obs'].replace("{modelo}", modelo_comercial)
             st.success(f"**💡 Dica do Chefinho:**\n\n{dica}")
         else:
-            # MENSAGEM NOVA PARA QUANDO O SITE NÃO ENCONTRAR O PADRÃO
             st.warning("⚠️ Padrão não identificado. Por favor, envie este log para o Chefinho para que ele possa fazer a correção do código e adicionar este novo defeito ao sistema.")
             
         if "log_registrado" not in st.session_state or st.session_state.log_registrado != arquivo.name:
@@ -145,7 +144,6 @@ if arquivo:
 
         st.write("---")
         
-        # BOTÃO E E-MAIL ATUALIZADOS PARA A CORREÇÃO DE CÓDIGO
         email_dest = "dfaamorim29@gmail.com"
         assunto = urllib.parse.quote(f"LOG PARA CORREÇÃO DE CÓDIGO - {modelo_comercial}")
         corpo = urllib.parse.quote(f"Chefinho, o site não conseguiu analisar este arquivo do {modelo_comercial} e não encontrou o padrão. Segue em anexo para você analisar e fazer a correção do código-fonte!\n\n(Lembre-se de anexar o arquivo .ips ou .txt)")
