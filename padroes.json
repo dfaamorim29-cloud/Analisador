@@ -1,13 +1,23 @@
 [
-{
-    "erro": "SEP PANIC",
+  {
+    "erro": "backboardd",
     "peso": 1,
     "modelos": ["TODOS"],
-    "periferico": "Chip NFC, Flex de Proximidade ou Placa Lógica",
+    "periferico": "Ecrã (Touch) ou Flex de Proximidade / ALS",
+    "risco": "Médio",
+    "suspeito_principal": "Flex de Proximidade ou Sensor ALS (Luz Ambiente).",
+    "causa": "Watchdog Timeout (userspace). O processo backboardd parou de responder, indicando falha crítica no touch ou sensores frontais.",
+    "obs": "No {modelo}, desconecte o Flex de Proximidade/ALS. (Nota técnica: Do iPhone 13 em diante, o sensor ALS fica fisicamente separado do TrueDepth). Se o aparelho estabilizar, troque o cabo. Se persistir, o defeito está na matriz do próprio ecrã (Touch); teste com um painel novo."
+  },
+  {
+    "erro": "sars/sars",
+    "peso": 1,
+    "modelos": ["TODOS"],
+    "periferico": "Placa Lógica (EEPROM/NFC) ou Flex de Proximidade (Face ID)",
     "risco": "Alto",
-    "suspeito_principal": "Placa Lógica (Chip NFC / EEPROM) ou Flex de Proximidade",
-    "causa": "Colapso crítico no Secure Enclave Processor (sars/sars). Perda de acesso à memória de segurança.",
-    "obs": "No {modelo}, desconecte o Flex de Proximidade (Face ID) para descartar um curto periférico. Como a data 1969 indica reset do RTC, teste com bateria nova. Se as reinicializações persistirem, o defeito é na placa lógica (Chip NFC ou interposer). Exige microsoldadura avançada."
+    "suspeito_principal": "Placa Lógica (Chip NFC / EEPROM) ou Face ID",
+    "causa": "SEP PANIC - Colapso no Secure Enclave Processor (Perda de comunicação segura).",
+    "obs": "No {modelo}, desconecte o Flex de Proximidade (Face ID). Como a data 1969 indica reset do RTC, teste obrigatoriamente com uma bateria nova de qualidade. Se persistir, o defeito é na placa lógica (Chip NFC ou interposer). Exige microsoldadura avançada."
   },
   {
     "erro": "ans2",
@@ -87,7 +97,7 @@
     "risco": "Médio",
     "suspeito_principal": "Flex do Botão Power",
     "causa": "Falha de leitura no sensor integrado ao cabo do botão Power.",
-    "obs": "Desconecte o Flex do Power no {modelo} e teste por 5 a 10 minutos. Troca da peça resolve na maioria dos casos."
+    "obs": "Desconecte o Flex do Power no {modelo} e teste por 5 a 10 minutos. A troca da peça resolve na maioria dos casos."
   },
   {
     "erro": "0x40000",
@@ -207,7 +217,7 @@
     "risco": "Médio",
     "suspeito_principal": "Flex de Proximidade",
     "causa": "O sistema não reconhece os sensores frontais.",
-    "obs": "Atenção: Nos modelos Pro, este código aponta para o FaceID/Auricular (diferente da linha base). Isole a peça frontal."
+    "obs": "Atenção: Nos modelos Pro, este código aponta para o FaceID/Auricular. Isole a peça frontal."
   },
   {
     "erro": "0x300000",
