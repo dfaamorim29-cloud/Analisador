@@ -52,7 +52,7 @@ def registrar_uso(modelo, diagnostico):
             json.dump(historico, f, indent=4, ensure_ascii=False)
     except: pass
 
-arquivo = st.file_uploader("", key="analise_v25")
+arquivo = st.file_uploader("", key="analise_v26")
 
 if arquivo:
     nome_arquivo = arquivo.name.lower()
