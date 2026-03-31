@@ -1,5 +1,25 @@
 [
   {
+    "erro": "0xe00002d6",
+    "peso": 1,
+    "modelos": ["TODOS"],
+    "periferico": "Placa Lógica (Módulo Wi-Fi / Bluetooth)",
+    "risco": "Alto",
+    "suspeito_principal": "Placa Lógica (Interposer / CI Wi-Fi)",
+    "causa": "PCIe Bus Error. Falha crítica de habilitação de porta PCIe (port enable failed), indicando quebra de comunicação direta com o módulo de redes.",
+    "obs": "No {modelo}, este erro não é causado por cabos flexíveis. Ocorre devido a uma falha na placa principal. O ícone de Wi-Fi costuma ficar acinzentado e inativo. Exige separação das faces da placa (sanduíche) e micro-soldadura avançada no setor do Wi-Fi/Bluetooth."
+  },
+  {
+    "erro": "AppleMultiFunctionManager",
+    "peso": 2,
+    "modelos": ["TODOS"],
+    "periferico": "Placa Lógica (Módulo Wi-Fi / Bluetooth)",
+    "risco": "Alto",
+    "suspeito_principal": "Placa Lógica (Interposer / CI Wi-Fi)",
+    "causa": "Falha no controlador PCIe AppleMultiFunctionManager, indicando quebra no barramento do Wi-Fi/Bluetooth.",
+    "obs": "No {modelo}, este erro de kernel aponta para falha na placa lógica, muitas vezes ocasionada por fortes quedas ou impactos. A separação da placa e inspeção das malhas de comunicação do Wi-Fi são estritamente necessárias."
+  },
+  {
     "erro": "checkins from backboardd",
     "peso": 1,
     "modelos": ["TODOS"],
