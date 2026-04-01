@@ -1,5 +1,15 @@
 [
   {
+    "erro": "Wake hang detected",
+    "peso": 1,
+    "modelos": ["TODOS"],
+    "periferico": "Módulo Wi-Fi / Bluetooth ou Software",
+    "risco": "Alto",
+    "suspeito_principal": "Placa Lógica (Módulo Wi-Fi / Bluetooth) ou Software",
+    "causa": "Sleep/Wake Hang. O telemóvel bloqueou ao transitar do estado de repouso (Sleep) para ativo (Wake). Frequentemente, o Módulo Bluetooth falha a inicialização e encrava o sistema.",
+    "obs": "No {modelo}, faça 1º Teste (Software): Backup e restauro limpo do iOS via DFU. Se o ciclo de reinícios persistir, o defeito é na Placa Lógica (CI Wi-Fi/Bluetooth). Impactos fraturam as soldaduras sob o chip ou no interposer. Exige separação de placas e micro-soldadura."
+  },
+  {
     "erro": "apcie[2:wlan]",
     "peso": 1,
     "modelos": ["TODOS"],
