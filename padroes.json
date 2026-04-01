@@ -1,5 +1,15 @@
 [
   {
+    "erro": "checkins from SpringBoard",
+    "peso": 1,
+    "modelos": ["TODOS"],
+    "periferico": "Sistema Operativo (Software) ou Memória NAND",
+    "risco": "Baixo a Alto",
+    "suspeito_principal": "Armazenamento Cheio (Software) ou Falha na Memória NAND",
+    "causa": "Watchdog Timeout (userspace). O processo SpringBoard parou de responder, indicando esgotamento de recursos lógicos ou incapacidade de leitura/escrita na memória.",
+    "obs": "No {modelo}, o 1º Teste é verificar o armazenamento interno. Se estiver cheio (próximo dos 100%), faça backup e um restauro limpo do iOS via DFU. Se o aparelho continuar a reiniciar com este erro após uma formatação limpa (sem repor o backup), o defeito é físico: desgaste no chip de memória NAND, exigindo substituição ou reprogramação por micro-soldadura."
+  },
+  {
     "erro": "Wake hang detected",
     "peso": 1,
     "modelos": ["TODOS"],
