@@ -1,5 +1,15 @@
 [
   {
+    "erro": "apcie[2:wlan]",
+    "peso": 1,
+    "modelos": ["TODOS"],
+    "periferico": "Placa Lógica (Módulo Wi-Fi / Bluetooth)",
+    "risco": "Alto",
+    "suspeito_principal": "Placa Lógica (Interposer / CI Wi-Fi)",
+    "causa": "PCIe Bus Error. O processador tentou comunicar com o módulo Wi-Fi (wlan) via barramento PCIe e esgotou o tempo limite (completion timeout).",
+    "obs": "No {modelo}, este erro aponta inequivocamente para uma quebra severa de comunicação com o Módulo Wi-Fi. O ícone do Wi-Fi costuma ficar acinzentado. Exige separação das faces da placa (interposer) e inspeção das malhas sob o CI do Wi-Fi."
+  },
+  {
     "erro": "0xe00002d6",
     "peso": 1,
     "modelos": ["TODOS"],
