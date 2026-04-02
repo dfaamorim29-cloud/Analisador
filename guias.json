@@ -95,7 +95,8 @@
         "id": "defeitos_iphone13",
         "pergunta": "Qual o sintoma principal apresentado pelo aparelho?",
         "opcoes": [
-            {"texto": "Sem Áudio (Inferior), Sem Vibração e Câmera Lenta/Travando", "proximo": "ip13_u8400_audio_vibra"}
+            {"texto": "Sem Áudio (Inferior), Sem Vibração e Câmera Lenta/Travando", "proximo": "ip13_u8400_audio_vibra"},
+            {"texto": "Câmera Traseira Não Foca (Após Queda)", "proximo": "ip13_camera_nao_foca"}
         ]
     },
     {
@@ -108,6 +109,22 @@
             "3. **Inspeção Visual na Placa:** Remova a placa e inspecione a região do U8400. Procure por marcas de oxidação, trincas no componente ou sinais de forte impacto (quebra das soldas BGA sob o CI).",
             "4. **Solução Definitiva:** O reparo consiste em substituir ou fazer o reballing do U8400. Aplique fluxo, aqueça e remova o CI com a estação de ar. Limpe os pads da placa com malha dessoldadora (com extrema leveza para não arrancar pads) e solde um CI novo ou de sucata.",
             "5. **Pós-Reparo:** Após a ressoldagem e resfriamento da placa, monte o aparelho e teste. O som, a vibração e a fluidez da câmera devem voltar a funcionar simultaneamente após a troca do U8400."
+        ],
+        "opcoes": [
+            {"texto": "⬅️ Voltar aos Defeitos", "proximo": "defeitos_iphone13"}
+        ]
+    },
+    {
+        "id": "ip13_camera_nao_foca",
+        "titulo": "Câmera Traseira Não Foca (Após Queda)",
+        "descricao": "Sintoma: O cliente relata que o aparelho sofreu uma forte queda. A câmera traseira abre, mas a imagem fica embaçada e o foco não ajusta. Substituir o módulo da câmera por um novo não resolve o problema.",
+        "passos": [
+            "1. **Teste de Periférico:** Sempre teste com uma câmera traseira sabidamente boa primeiro. Se a câmera nova apresentar o mesmo sintoma de não focar, o diagnóstico de falha na placa está confirmado.",
+            "2. **A Causa Real (Placa Dupla):** Impactos fortes causam uma leve torção no chassi e na placa-mãe. Essa torção rompe as soldas de união (interposer) entre a placa superior e inferior, especificamente rompendo as malhas de comunicação **I2C2** que ligam a Câmera, o PMU da Câmera e o CI de Flash (Strobe IC).",
+            "3. **O Que NÃO Fazer:** Evite fazer apenas um \"Reflow\" (esquentar a placa para juntar a solda novamente). Como a solda sofreu estresse mecânico, o reflow é uma solução temporária e o defeito fatalmente retornará em pouco tempo.",
+            "4. **A Solução Profissional:** Utilize uma base aquecedora (pre-heater) para separar as duas camadas da placa lógica. Faça a limpeza completa de toda a solda antiga nas duas faces com malha dessoldadora.",
+            "5. **Reballing do Interposer:** Refaça as esferas do interposer utilizando pasta de solda de média fusão (148°C ou 158°C, conforme seu costume de bancada) e una as placas novamente na base aquecedora.",
+            "6. **Pós-Reparo:** Após resfriar, antes de montar tudo, meça as linhas I2C2 no conector da câmera (condução reversa) para confirmar que a comunicação voltou. Ligue o aparelho e teste o foco em Foto, Retrato e Vídeo."
         ],
         "opcoes": [
             {"texto": "⬅️ Voltar aos Defeitos", "proximo": "defeitos_iphone13"}
