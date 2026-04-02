@@ -1,58 +1,42 @@
-{
-  "Sintomas": {
-    "Não dá imagem / Tela escura": {
-      "1": {
-        "pergunta": "O aparelho é reconhecido no computador (ex: 3uTools) ou apresenta um consumo normal de boot na fonte de alimentação?",
-        "opcoes": {
-          "Sim, o aparelho liga": "2",
-          "Não, ele não liga ou trava o consumo": "3"
-        }
-      },
-      "2": {
-        "pergunta": "Já testou com um ecrã novo de qualidade original comprovada?",
-        "opcoes": {
-          "Sim, e resolveu": "solucao_1",
-          "Sim, mas continua sem imagem": "solucao_2"
-        }
-      },
-      "3": {
-        "pergunta": "Na fonte de bancada, o aparelho trava em consumos baixos (ex: 50mA a 150mA)?",
-        "opcoes": {
-          "Sim, trava em baixo consumo": "solucao_3",
-          "Não, o consumo está zerado": "solucao_4"
-        }
-      },
-      "solucao_1": "✅ Perfeito! O defeito era apenas no periférico (Ecrã). Fim do diagnóstico.",
-      "solucao_2": "🛠️ **Problema na Placa (Setor de Imagem):** Meça a condução reversa no conector FPC do ecrã. Verifique os filtros EMI, o circuito de backlight (ex: Chestnut/Driver de imagem) e as linhas MIPI/I2C de comunicação com a CPU.",
-      "solucao_3": "🛠️ **Problema na Placa (Curto ou I2C):** Possível falha na comunicação I2C principal ou na CPU. Verifique se existe curto-circuito nas linhas de alimentação primária (VCC_MAIN / VDD_MAIN) ou falha no PMIC. Exige câmara térmica.",
-      "solucao_4": "🛠️ **Problema de Alimentação:** O aparelho não tem entrada de energia. Verifique o circuito de carga (Tigris/Tristar/Hydra/Kraken) e certifique-se de que a tensão chega ao PMIC principal."
+[
+    {
+        "id": "inicio",
+        "pergunta": "Qual o comportamento inicial na fonte de bancada?",
+        "opcoes": [
+            {"texto": "Curto Imediato (Antes do Power)", "proximo": "curto_primario"},
+            {"texto": "Consumo após o pulso de Power", "proximo": "curto_secundario"}
+        ]
     },
-    "Não carrega / Falso carregamento": {
-      "1": {
-        "pergunta": "Ao ligar o cabo, o aparelho mostra o raio de carga mas a percentagem da bateria não sobe?",
-        "opcoes": {
-          "Sim, é falso carregamento": "2",
-          "Não, ele nem sequer mostra o raio": "3"
-        }
-      },
-      "2": {
-        "pergunta": "Já testou com uma bateria nova e com outro Flex de Carga (Dock)?",
-        "opcoes": {
-          "Sim, testei ambos e o defeito continua": "solucao_1",
-          "Ainda não testei periféricos novos": "solucao_2"
-        }
-      },
-      "3": {
-        "pergunta": "O aparelho consome 0.00A no medidor USB (USB Tester)?",
-        "opcoes": {
-          "Sim, consumo zerado no USB": "solucao_3",
-          "Não, tem algum consumo instável": "solucao_4"
-        }
-      },
-      "solucao_1": "🛠️ **Problema na Placa (Circuito de Carga):** O defeito está na placa lógica. Analise o CI de carga (Tigris), o CI USB controlador (Tristar/Kraken/Hydra) e o Mosfet de proteção.",
-      "solucao_2": "✅ Isole o defeito primeiro. Substitua a Bateria e o Conector de Carga (Dock Flex) para descartar avaria em periféricos.",
-      "solucao_3": "🛠️ **Sem entrada de energia:** Verifique se o Flex de Carga está rasgado. Se estiver bom, analise o CI USB (Tristar/Hydra) e meça se a tensão de 5V chega à placa.",
-      "solucao_4": "🛠️ Limpe a porta de carga, verifique se há oxidação no conector FPC da placa e, de seguida, proceda à análise do CI controlador USB."
+    {
+        "id": "curto_secundario",
+        "pergunta": "Selecione o modelo para análise de malhas secundárias:",
+        "opcoes": [
+            {"texto": "iPhone 11", "proximo": "iphone11_pos_power"},
+            {"texto": "Outros modelos (Em breve)", "proximo": "inicio"}
+        ]
+    },
+    {
+        "id": "iphone11_pos_power",
+        "titulo": "Diagnóstico: iPhone 11 - Oscilação Pós-Power",
+        "descricao": "Comportamento: Corrente salta de 0A para 320mA -> 1.4A -> 500mA e zera. Geralmente indica falha de comunicação ou curto em malha secundária.",
+        "passos": [
+            "1. **Teste de Diodo (Conector de Bateria):** Verifique se não há fuga na VCC_MAIN.",
+            "2. **Inspeção Visual:** Procure por oxidação no conector da tela ou Proximity Flex (falha comum de I2C).",
+            "3. **Medição de Malhas:** Verifique curto nas malhas PP_GPU_CORE, PP_CPU_SRAM e PP1V8_S2.",
+            "4. **Análise de I2C:** Teste as linhas I2C0, I2C1 e I2C2. Uma falha aqui impede o boot e causa o 'pulo' na corrente.",
+            "5. **Dica Especial:** Tente ligar a placa sem o flex do auricular conectado; se ligar, o problema é o sensor de proximidade/iluminação."
+        ],
+        "referencia": "https://repair.wiki/w/IPhone_11_Not_Powering_on",
+        "opcoes": [
+            {"texto": "Reiniciar Guia", "proximo": "inicio"}
+        ]
+    },
+    {
+        "id": "curto_primario",
+        "pergunta": "O consumo trava em um valor alto ou a fonte desarma?",
+        "opcoes": [
+            {"texto": "Fonte Desarma (Curto Total)", "proximo": "curto_total"},
+            {"texto": "Consumo Baixo Constante", "proximo": "fuga_corrente"}
+        ]
     }
-  }
-}
+]
