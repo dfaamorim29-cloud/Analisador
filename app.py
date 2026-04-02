@@ -178,7 +178,7 @@ with aba2:
     if not guias:
         st.warning("Nenhum guia carregado. Verifique o arquivo guias.json")
     else:
-        # Gerenciar estado da navegação e modelo (Agora criados separadamente para evitar o erro)
+        # Gerenciar estado da navegação e modelo
         if 'passo_guia' not in st.session_state:
             st.session_state.passo_guia = "inicio"
             
