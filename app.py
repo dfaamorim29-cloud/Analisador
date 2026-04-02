@@ -5,7 +5,7 @@ import re
 import urllib.parse
 from datetime import datetime
 
-# Forçando o layout centralizado para não ocupar a tela toda
+# Layout centralizado
 st.set_page_config(page_title="iPhone & CIA - Diagnóstico Pro", page_icon="📱", layout="centered")
 
 st.markdown("""
@@ -199,8 +199,6 @@ with aba2:
         if 'passos' in no_atual:
             for p in no_atual['passos']:
                 st.markdown(p)
-            if 'referencia' in no_atual:
-                st.markdown(f"🔗 **[Link da Solução Completa na Repair Wiki]({no_atual['referencia']})**")
         
         st.write("---")
 
