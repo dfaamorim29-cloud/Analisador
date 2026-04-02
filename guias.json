@@ -1,31 +1,46 @@
 [
     {
         "id": "inicio",
-        "pergunta": "Selecione o modelo do aparelho para iniciar o diagnóstico:",
+        "pergunta": "Selecione a linha ou modelo do aparelho para iniciar o diagnóstico:",
         "opcoes": [
-            {"texto": "iPhone 11", "proximo": "iphone11_defeitos"}
+            {"texto": "Linha iPhone 11 (11, 11 Pro, 11 Pro Max)", "proximo": "linha_iphone11_defeitos"}
         ]
     },
     {
-        "id": "iphone11_defeitos",
-        "pergunta": "Qual o sintoma principal apresentado pelo iPhone 11?",
+        "id": "linha_iphone11_defeitos",
+        "pergunta": "Qual o sintoma principal apresentado pelo aparelho?",
         "opcoes": [
-            {"texto": "Não liga - Consumo oscilante após apertar o Power", "proximo": "ip11_consumo_pos_power"}
+            {"texto": "Não liga - Tela Preta, consumo oscilante na fonte (ex: 0A -> 320mA -> 1.4A)", "proximo": "ip11_consumo_pos_power_nand"},
+            {"texto": "Não liga - Fica reiniciando na Maçã (Loop)", "proximo": "ip11_loop_maca"}
         ]
     },
     {
-        "id": "ip11_consumo_pos_power",
-        "titulo": "iPhone 11 - Não Liga (Consumo Pós-Power)",
-        "descricao": "Sintoma: O aparelho não apresenta consumo ao plugar na fonte, mas ao apertar o botão Power, a corrente oscila repetidamente (ex: 0A -> 320mA -> 1.4A -> 500mA e zera).",
+        "id": "ip11_consumo_pos_power_nand",
+        "titulo": "Linha iPhone 11 - Não Liga (Consumo Pós-Power / Tela Preta)",
+        "descricao": "Sintoma: O aparelho não apresenta consumo inicial, mas ao apertar o Power, a corrente oscila repetidamente e a tela permanece apagada (ex: 0A -> 320mA -> 1.4A -> 500mA -> 0A).",
         "passos": [
-            "1. **Entendendo o problema:** Esse comportamento indica que o iPhone está tentando iniciar o sistema, mas encontra um erro fatal de comunicação e reinicia o ciclo (boot loop a nível de placa). Geralmente é causado por curtos em malhas secundárias ou falhas nas linhas I2C.",
-            "2. **A Dica de Ouro (Teste Rápido):** Desconecte o flex do auricular (Proximity/Flood Illuminator Flex). Tente ligar a placa novamente. Se o aparelho ligar e der imagem normalmente, o problema é oxidação ou curto nesse flex. Apenas substitua-o.",
-            "3. **Análise de Curtos Secundários:** Se a dica acima não resolveu, use o multímetro em escala de diodo. Meça as malhas PP_GPU_CORE, PP_CPU_SRAM e PP1V8_S2. Se encontrar valores muito próximos a zero (curto real), injete tensão compatível com a malha para encontrar o componente aquecendo.",
-            "4. **Análise das Linhas I2C:** Falhas de comunicação nas linhas I2C0, I2C1 e I2C2 impedem a CPU de checar os periféricos, causando esse salto de corrente. Meça as quedas de tensão nessas linhas no conector da placa para identificar qual está falhando."
+            "1. **Diferenciação do Defeito:** Como a tela fica preta (não aparece a maçã), o problema ocorre logo no início do boot. Se aparecesse a maçã, o suspeito principal seria o flex do auricular.",
+            "2. **Alvo Principal (Memória NAND):** Esse salto de corrente específico, documentado e comum na linha 11, quase sempre indica um curto nas malhas de alimentação da memória NAND.",
+            "3. **Medição na Bancada:** Vá direto para o setor da NAND. Use o multímetro em escala de diodo e meça os capacitores ao redor da memória. Verifique curto nas malhas principais (ex: **PP3V0_NAND**, **PP0V9_NAND**, **PP1V8_IO**).",
+            "4. **Solução:** Ao encontrar a linha em curto, injete a tensão correspondente da malha (com atenção redobrada para não exceder o limite de tensão, especialmente na malha de 0.9V) para encontrar o capacitor que está aquecendo e faça a substituição."
         ],
         "referencia": "https://repair.wiki/w/IPhone_11_Not_Powering_on,_After_Prompt_to_Boot_Current_Jumps_Back_and_Forth",
         "opcoes": [
-            {"texto": "Voltar aos Defeitos do iPhone 11", "proximo": "iphone11_defeitos"},
+            {"texto": "Voltar aos Defeitos da Linha 11", "proximo": "linha_iphone11_defeitos"},
+            {"texto": "Voltar ao Início", "proximo": "inicio"}
+        ]
+    },
+    {
+        "id": "ip11_loop_maca",
+        "titulo": "Linha iPhone 11 - Loop na Maçã",
+        "descricao": "Sintoma: O aparelho liga, aparece o logotipo da Apple e reinicia em seguida (Loop).",
+        "passos": [
+            "1. **Teste Rápido (Auricular):** Desconecte o flex do auricular (Proximity/Flood Illuminator Flex) e tente ligar a placa novamente.",
+            "2. **Diagnóstico:** Se o aparelho ligar e iniciar o sistema normalmente, o defeito é oxidação ou falha no próprio flex do auricular.",
+            "3. **Solução:** Para resolver mantendo o Face ID, faça o transplante dos sensores originais para um flex novo."
+        ],
+        "opcoes": [
+            {"texto": "Voltar aos Defeitos da Linha 11", "proximo": "linha_iphone11_defeitos"},
             {"texto": "Voltar ao Início", "proximo": "inicio"}
         ]
     }
