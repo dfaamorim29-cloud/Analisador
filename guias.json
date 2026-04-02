@@ -1,42 +1,32 @@
 [
     {
         "id": "inicio",
-        "pergunta": "Qual o comportamento inicial na fonte de bancada?",
+        "pergunta": "Selecione o modelo do aparelho para iniciar o diagnóstico:",
         "opcoes": [
-            {"texto": "Curto Imediato (Antes do Power)", "proximo": "curto_primario"},
-            {"texto": "Consumo após o pulso de Power", "proximo": "curto_secundario"}
+            {"texto": "iPhone 11", "proximo": "iphone11_defeitos"}
         ]
     },
     {
-        "id": "curto_secundario",
-        "pergunta": "Selecione o modelo para análise de malhas secundárias:",
+        "id": "iphone11_defeitos",
+        "pergunta": "Qual o sintoma principal apresentado pelo iPhone 11?",
         "opcoes": [
-            {"texto": "iPhone 11", "proximo": "iphone11_pos_power"},
-            {"texto": "Outros modelos (Em breve)", "proximo": "inicio"}
+            {"texto": "Não liga - Consumo oscilante após apertar o Power", "proximo": "ip11_consumo_pos_power"}
         ]
     },
     {
-        "id": "iphone11_pos_power",
-        "titulo": "Diagnóstico: iPhone 11 - Oscilação Pós-Power",
-        "descricao": "Comportamento: Corrente salta de 0A para 320mA -> 1.4A -> 500mA e zera. Geralmente indica falha de comunicação ou curto em malha secundária.",
+        "id": "ip11_consumo_pos_power",
+        "titulo": "iPhone 11 - Não Liga (Consumo Pós-Power)",
+        "descricao": "Sintoma: O aparelho não apresenta consumo ao plugar na fonte, mas ao apertar o botão Power, a corrente oscila repetidamente (ex: 0A -> 320mA -> 1.4A -> 500mA e zera).",
         "passos": [
-            "1. **Teste de Diodo (Conector de Bateria):** Verifique se não há fuga na VCC_MAIN.",
-            "2. **Inspeção Visual:** Procure por oxidação no conector da tela ou Proximity Flex (falha comum de I2C).",
-            "3. **Medição de Malhas:** Verifique curto nas malhas PP_GPU_CORE, PP_CPU_SRAM e PP1V8_S2.",
-            "4. **Análise de I2C:** Teste as linhas I2C0, I2C1 e I2C2. Uma falha aqui impede o boot e causa o 'pulo' na corrente.",
-            "5. **Dica Especial:** Tente ligar a placa sem o flex do auricular conectado; se ligar, o problema é o sensor de proximidade/iluminação."
+            "1. **Entendendo o problema:** Esse comportamento indica que o iPhone está tentando iniciar o sistema, mas encontra um erro fatal de comunicação e reinicia o ciclo (boot loop a nível de placa). Geralmente é causado por curtos em malhas secundárias ou falhas nas linhas I2C.",
+            "2. **A Dica de Ouro (Teste Rápido):** Desconecte o flex do auricular (Proximity/Flood Illuminator Flex). Tente ligar a placa novamente. Se o aparelho ligar e der imagem normalmente, o problema é oxidação ou curto nesse flex. Apenas substitua-o.",
+            "3. **Análise de Curtos Secundários:** Se a dica acima não resolveu, use o multímetro em escala de diodo. Meça as malhas PP_GPU_CORE, PP_CPU_SRAM e PP1V8_S2. Se encontrar valores muito próximos a zero (curto real), injete tensão compatível com a malha para encontrar o componente aquecendo.",
+            "4. **Análise das Linhas I2C:** Falhas de comunicação nas linhas I2C0, I2C1 e I2C2 impedem a CPU de checar os periféricos, causando esse salto de corrente. Meça as quedas de tensão nessas linhas no conector da placa para identificar qual está falhando."
         ],
-        "referencia": "https://repair.wiki/w/IPhone_11_Not_Powering_on",
+        "referencia": "https://repair.wiki/w/IPhone_11_Not_Powering_on,_After_Prompt_to_Boot_Current_Jumps_Back_and_Forth",
         "opcoes": [
-            {"texto": "Reiniciar Guia", "proximo": "inicio"}
-        ]
-    },
-    {
-        "id": "curto_primario",
-        "pergunta": "O consumo trava em um valor alto ou a fonte desarma?",
-        "opcoes": [
-            {"texto": "Fonte Desarma (Curto Total)", "proximo": "curto_total"},
-            {"texto": "Consumo Baixo Constante", "proximo": "fuga_corrente"}
+            {"texto": "Voltar aos Defeitos do iPhone 11", "proximo": "iphone11_defeitos"},
+            {"texto": "Voltar ao Início", "proximo": "inicio"}
         ]
     }
 ]
