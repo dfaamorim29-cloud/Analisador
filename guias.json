@@ -5,7 +5,10 @@
         "opcoes": [
             {"texto": "iPhone 11", "proximo": "defeitos_11_series"},
             {"texto": "iPhone 11 Pro", "proximo": "defeitos_11_series"},
-            {"texto": "iPhone 11 Pro Max", "proximo": "defeitos_11_series"}
+            {"texto": "iPhone 11 Pro Max", "proximo": "defeitos_11_series"},
+            {"texto": "iPhone 12", "proximo": "defeitos_12_series"},
+            {"texto": "iPhone 12 Pro", "proximo": "defeitos_12_series"},
+            {"texto": "iPhone 12 Pro Max", "proximo": "defeitos_12_series"}
         ]
     },
     {
@@ -24,13 +27,12 @@
         "passos": [
             "1. **Entendendo o Comportamento:** Embora o consumo alto só apareça após o pulso de boot, este comportamento é clássico de um curto franco nas linhas primárias **VDD_MAIN** ou **VDD_BOOST**. A arquitetura da placa segura a corrente através do mosfet de chaveamento até o aparelho ser ativado.",
             "2. **Medição a Frio:** Com a placa sem energia, coloque o multímetro na escala de diodo/continuidade e meça os capacitores das malhas VDD_MAIN e VDD_BOOST para confirmar qual delas está em curto com o GND.",
-            "3. **Injeção de Tensão:** Ao confirmar a malha em curto, injete tensão diretamente nela. Comece com uma tensão baixa (ex: 1V a 2V) para não estressar a placa, mas com a corrente da fonte livre.",
+            "3. **Injeção de Tensão:** Ao confirmar a malha em curto, injete tensão diretamente nela. Comece com uma tensão baixa (ex: 1V a 2V) para não estressar a placa.",
             "4. **Caça ao Curto:** Utilize breu (rosin), spray congelante ou uma câmera térmica. O componente em curto (quase sempre um capacitor) vai dissipar calor rapidamente.",
-            "5. **Solução:** Remova o capacitor defeituoso e meça a malha novamente. Se o curto sumir, a placa voltará a ligar. Substitua o componente por um de mesma capacitância para manter a estabilidade da linha."
+            "5. **Solução:** Remova o capacitor defeituoso e meça a malha novamente. Se o curto sumir, a placa voltará a ligar. Substitua o componente por um de mesma capacitância."
         ],
         "opcoes": [
-            {"texto": "Voltar aos Defeitos", "proximo": "defeitos_11_series"},
-            {"texto": "Voltar ao Início", "proximo": "inicio"}
+            {"texto": "⬅️ Voltar aos Defeitos", "proximo": "defeitos_11_series"}
         ]
     },
     {
@@ -39,29 +41,49 @@
         "descricao": "Sintoma: Ao apertar o Power, a corrente oscila repetidamente e a tela permanece apagada (ex: 0A -> 320mA -> 1.4A -> 500mA -> 0A).",
         "passos": [
             "1. **Diferenciação do Defeito:** Como a tela fica preta (não aparece a maçã), o problema ocorre logo no início da varredura de boot.",
-            "2. **Alvo Principal (Memória NAND):** Esse salto de corrente específico, especialmente na linha 11, quase sempre indica um curto nas malhas de alimentação da memória NAND.",
+            "2. **Alvo Principal (Memória NAND):** Esse salto de corrente específico quase sempre indica um curto nas malhas de alimentação da memória NAND.",
             "3. **Medição na Bancada:** Vá direto para o setor da NAND. Use o multímetro em escala de diodo e verifique curto nas malhas principais como **PP3V0_NAND**, **PP0V9_NAND** e **PP1V8_IO**.",
-            "4. **Solução:** Ao encontrar a linha em curto, injete a tensão correspondente da malha (ATENÇÃO redobrada para não injetar mais de 0.9V na PP0V9_NAND para não queimar a memória) para encontrar o capacitor que está aquecendo e faça a substituição."
+            "4. **Solução:** Ao encontrar a linha em curto, injete a tensão correspondente da malha (ATENÇÃO redobrada para não injetar mais de 0.9V na PP0V9_NAND) para encontrar o capacitor que está aquecendo e faça a substituição."
         ],
         "opcoes": [
-            {"texto": "Voltar aos Defeitos", "proximo": "defeitos_11_series"},
-            {"texto": "Voltar ao Início", "proximo": "inicio"}
+            {"texto": "⬅️ Voltar aos Defeitos", "proximo": "defeitos_11_series"}
         ]
     },
     {
         "id": "ip11_loop_maca",
         "titulo": "Loop na Maçã (Diagnóstico Avançado)",
-        "descricao": "Sintoma: O aparelho liga, aparece o logotipo da Apple e reinicia infinitamente. Restaurações via iTunes/3uTools podem falhar ou travar.",
+        "descricao": "Sintoma: O aparelho liga, aparece o logotipo da Apple e reinicia infinitamente. Restaurações podem falhar ou travar.",
         "passos": [
             "1. **Teste Básico (Periféricos):** O primeiro suspeito é o flex do auricular (Proximity). Desconecte-o e tente ligar a placa. Se ligar normalmente, o defeito é oxidação no flex. Faça o transplante dos sensores para um flex novo mantendo o Face ID.",
-            "2. **Análise de Placa (Malha I2C):** Se a placa nua continuar em bootloop, o problema costuma ser falha de comunicação da CPU. Na linha 11, um defeito clássico é o **CI de Áudio (U4700)** entrar em curto e derrubar a malha **I2C_AOP_SDA**.",
-            "3. **Medição na Bancada:** O lugar mais fácil para medir essa malha é no próprio conector do flex do auricular na placa. Coloque o multímetro em escala de diodo (condução reversa).",
-            "4. **O Pulo do Gato (Valores de Referência):** O valor normal da linha SDA é de aproximadamente **0.342**. Se a medição apresentar um valor muito baixo (ex: **0.060** ou próximo de zero), o CI de Áudio está em curto puxando a linha para o terra.",
-            "5. **Solução Definitiva:** Remova o CI de Áudio (U4700). Teste ligar a placa novamente (ela deve dar o boot completo, mas sem áudio). Confirmado o diagnóstico, instale um U4700 novo ou faça reballing em um doador para finalizar o reparo."
+            "2. **Análise de Placa (Malha I2C):** Se a placa nua continuar em bootloop, um defeito clássico é o **CI de Áudio (U4700)** entrar em curto e derrubar a malha **I2C_AOP_SDA**.",
+            "3. **Medição na Bancada:** Meça a condução reversa no conector do flex do auricular na placa.",
+            "4. **O Pulo do Gato:** O valor normal da linha SDA é de ~**0.342**. Se apresentar um valor muito baixo (ex: **0.060**), o CI de Áudio está puxando a linha para o terra.",
+            "5. **Solução Definitiva:** Remova o CI de Áudio (U4700). Teste ligar a placa novamente. Confirmado o diagnóstico, instale um CI novo ou faça reballing."
         ],
         "opcoes": [
-            {"texto": "Voltar aos Defeitos", "proximo": "defeitos_11_series"},
-            {"texto": "Voltar ao Início", "proximo": "inicio"}
+            {"texto": "⬅️ Voltar aos Defeitos", "proximo": "defeitos_11_series"}
+        ]
+    },
+    {
+        "id": "defeitos_12_series",
+        "pergunta": "Qual o sintoma principal apresentado pelo aparelho?",
+        "opcoes": [
+            {"texto": "Travado na Maçã / Erro 4013 (iTunes)", "proximo": "ip12_erro_4013"}
+        ]
+    },
+    {
+        "id": "ip12_erro_4013",
+        "titulo": "Travado na Maçã / Erro 4013",
+        "descricao": "Sintoma: O aparelho liga, trava no logotipo da Apple e não inicia. Ao tentar restaurar pelo iTunes/3uTools, apresenta o Erro 4013.",
+        "passos": [
+            "1. **O Suspeito Número 1:** Na linha 12, o Erro 4013 ou travamento na maçã é quase sempre causado por um curto no flex do Auricular / Sensor de Proximidade (Flood Illuminator/ALS). Esse curto derruba a malha de comunicação **I2C3**.",
+            "2. **Teste Rápido e Certeiro:** Abra o aparelho e desconecte APENAS o flex superior (auricular). Tente ligar o aparelho novamente.",
+            "3. **Diagnóstico:** Se o aparelho ligar normalmente ou restaurar sem o Erro 4013, o defeito está 100% isolado no flex do auricular. Geralmente ocorre por oxidação (contato com água/suor).",
+            "4. **Atenção ao Face ID:** Para manter o Face ID e o True Tone funcionando, não basta colocar um flex novo. É necessário limpar a oxidação do flex original ou fazer o transplante do sensor (Flood Illuminator/ALS) para um flex novo.",
+            "5. **E se não for o flex?** Se mesmo desconectando o flex o aparelho continuar dando erro 4013, o curto na linha I2C3 pode estar em outro periférico (como as câmeras traseiras). Desconecte as câmeras e teste novamente."
+        ],
+        "opcoes": [
+            {"texto": "⬅️ Voltar aos Defeitos", "proximo": "defeitos_12_series"}
         ]
     }
 ]
