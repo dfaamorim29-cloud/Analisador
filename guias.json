@@ -6,9 +6,14 @@
             {"texto": "iPhone 11", "proximo": "defeitos_11_series"},
             {"texto": "iPhone 11 Pro", "proximo": "defeitos_11_series"},
             {"texto": "iPhone 11 Pro Max", "proximo": "defeitos_11_series"},
+            {"texto": "iPhone 12 Mini", "proximo": "defeitos_12_series"},
             {"texto": "iPhone 12", "proximo": "defeitos_12_series"},
             {"texto": "iPhone 12 Pro", "proximo": "defeitos_12_series"},
-            {"texto": "iPhone 12 Pro Max", "proximo": "defeitos_12_series"}
+            {"texto": "iPhone 12 Pro Max", "proximo": "defeitos_12_series"},
+            {"texto": "iPhone 13 Mini", "proximo": "em_breve"},
+            {"texto": "iPhone 13", "proximo": "defeitos_iphone13"},
+            {"texto": "iPhone 13 Pro", "proximo": "em_breve"},
+            {"texto": "iPhone 13 Pro Max", "proximo": "em_breve"}
         ]
     },
     {
@@ -85,5 +90,33 @@
         "opcoes": [
             {"texto": "⬅️ Voltar aos Defeitos", "proximo": "defeitos_12_series"}
         ]
+    },
+    {
+        "id": "defeitos_iphone13",
+        "pergunta": "Qual o sintoma principal apresentado pelo aparelho?",
+        "opcoes": [
+            {"texto": "Sem Áudio (Inferior), Sem Vibração e Câmera Lenta/Travando", "proximo": "ip13_u8400_audio_vibra"}
+        ]
+    },
+    {
+        "id": "ip13_u8400_audio_vibra",
+        "titulo": "Sem Áudio, Sem Vibração e Câmera Lenta",
+        "descricao": "Sintoma: O aparelho liga normalmente, mas o alto-falante inferior (Ringer) não emite som, o motor de vibração (Taptic Engine) não responde, e o aplicativo da câmera fica com a imagem extremamente lenta, travando ou demorando para abrir.",
+        "passos": [
+            "1. **Teste Básico (Periféricos):** Antes de mexer na placa, conecte um alto-falante inferior e um Taptic Engine que você tenha certeza estarem bons. Se os três defeitos continuarem, o problema está definitivamente na placa-mãe.",
+            "2. **O Verdadeiro Culpado (CI U8400):** No **iPhone 13 (modelo base)**, quando esses três defeitos acontecem JUNTOS, o culpado crônico é o **CI U8400**. Ele gerencia essas comunicações e, quando falha, derruba o funcionamento em conjunto.",
+            "3. **Inspeção Visual na Placa:** Remova a placa e inspecione a região do U8400. Procure por marcas de oxidação, trincas no componente ou sinais de forte impacto (quebra das soldas BGA sob o CI).",
+            "4. **Solução Definitiva:** O reparo consiste em substituir ou fazer o reballing do U8400. Aplique fluxo, aqueça e remova o CI com a estação de ar. Limpe os pads da placa com malha dessoldadora (com extrema leveza para não arrancar pads) e solde um CI novo ou de sucata.",
+            "5. **Pós-Reparo:** Após a ressoldagem e resfriamento da placa, monte o aparelho e teste. O som, a vibração e a fluidez da câmera devem voltar a funcionar simultaneamente após a troca do U8400."
+        ],
+        "opcoes": [
+            {"texto": "⬅️ Voltar aos Defeitos", "proximo": "defeitos_iphone13"}
+        ]
+    },
+    {
+        "id": "em_breve",
+        "titulo": "Diagnósticos em Desenvolvimento",
+        "descricao": "Os defeitos de bancada específicos para este modelo já estão sendo catalogados e em breve estarão disponíveis no sistema para análise.",
+        "opcoes": []
     }
 ]
