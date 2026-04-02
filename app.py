@@ -61,9 +61,6 @@ def registrar_uso(modelo, diagnostico):
             json.dump(historico, f, indent=4, ensure_ascii=False)
     except: pass
 
-def avanca_passo(novo_passo):
-    st.session_state.passo_atual = novo_passo
-
 # --- ESTRUTURA DE ABAS ---
 aba1, aba2 = st.tabs(["📄 Leitor de Panic Log", "🧭 Guia Interativo de Bancada"])
 
@@ -175,40 +172,62 @@ with aba1:
 # ==========================================
 with aba2:
     st.subheader("🧭 Assistente de Diagnóstico de Placa")
-    st.write("Selecione os comportamentos abaixo para encontrar a solução:")
     
     guias = carregar_guias()
     
     if not guias:
         st.warning("Nenhum guia carregado. Verifique o arquivo guias.json")
     else:
-        # Gerenciar estado da navegação
+        # Gerenciar estado da navegação e modelo
         if 'passo_guia' not in st.session_state:
             st.session_state.passo_guia = "inicio"
+            st.session_state.modelo_selecionado = ""
 
         # Localizar o nó atual do guia
         no_atual = next((g for g in guias if g['id'] == st.session_state.passo_guia), guias[0])
 
-        # Exibir o bloco de conteúdo
-        st.markdown(f"""<div class="guia-card">
-            <h3 style="color: #007AFF;">{no_atual.get('titulo', 'Nova Consulta')}</h3>
-            <p style="font-size: 18px;">{no_atual.get('pergunta', no_atual.get('descricao', ''))}</p>
-        </div>""", unsafe_allow_html=True)
+        # Estrutura do cabeçalho com colunas para o botão "Voltar ao Início"
+        st.markdown('<div class="guia-card">', unsafe_allow_html=True)
+        
+        col_titulo, col_btn = st.columns([3, 1])
+        
+        with col_titulo:
+            # Mostra o modelo selecionado (se não estiver no início)
+            if st.session_state.passo_guia != "inicio" and st.session_state.modelo_selecionado:
+                st.markdown(f"<span style='color: #666; font-size: 15px; font-weight: bold;'>📱 Aparelho Selecionado: {st.session_state.modelo_selecionado}</span>", unsafe_allow_html=True)
+            
+            st.markdown(f"<h3 style='color: #007AFF; margin-top: 5px;'>{no_atual.get('titulo', 'Nova Consulta')}</h3>", unsafe_allow_html=True)
+            
+            if 'pergunta' in no_atual or 'descricao' in no_atual:
+                st.markdown(f"<p style='font-size: 18px;'>{no_atual.get('pergunta', no_atual.get('descricao', ''))}</p>", unsafe_allow_html=True)
+                
+        with col_btn:
+            # Botão de Voltar ao Início azul (type="primary") só aparece se não estiver no início
+            if st.session_state.passo_guia != "inicio":
+                if st.button("🏠 Voltar ao Início", type="primary", use_container_width=True):
+                    st.session_state.passo_guia = "inicio"
+                    st.session_state.modelo_selecionado = ""
+                    st.rerun()
 
         # Se tiver passos (resultado final)
         if 'passos' in no_atual:
             for p in no_atual['passos']:
                 st.markdown(p)
         
+        st.markdown('</div>', unsafe_allow_html=True)
         st.write("---")
 
-        # Gerar botões de opção
+        # Gerar botões de navegação
         opcoes = no_atual.get('opcoes', [])
         
-        # Cria colunas para os botões ficarem lado a lado quando possível
+        # Cria colunas para os botões ficarem lado a lado
         cols = st.columns(len(opcoes)) if len(opcoes) > 0 else []
         
         for i, opcao in enumerate(opcoes):
             if cols[i].button(opcao['texto'], key=f"btn_{opcao['proximo']}_{i}", use_container_width=True):
+                # Se estiver no início, salva qual aparelho foi clicado
+                if st.session_state.passo_guia == "inicio":
+                    st.session_state.modelo_selecionado = opcao['texto']
+                
                 st.session_state.passo_guia = opcao['proximo']
                 st.rerun()
