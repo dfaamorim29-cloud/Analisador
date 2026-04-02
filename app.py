@@ -5,8 +5,8 @@ import re
 import urllib.parse
 from datetime import datetime
 
-# Removido o layout="wide" para voltar a ficar centralizado
-st.set_page_config(page_title="iPhone & CIA - Diagnóstico Pro", page_icon="📱")
+# Forçando o layout centralizado para não ocupar a tela toda
+st.set_page_config(page_title="iPhone & CIA - Diagnóstico Pro", page_icon="📱", layout="centered")
 
 st.markdown("""
     <style>
@@ -204,7 +204,7 @@ with aba2:
         
         st.write("---")
 
-        # Gerar botões de opção verticalmente ou em colunas
+        # Gerar botões de opção
         opcoes = no_atual.get('opcoes', [])
         
         # Cria colunas para os botões ficarem lado a lado quando possível
