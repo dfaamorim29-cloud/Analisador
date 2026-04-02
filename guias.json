@@ -1,46 +1,64 @@
 [
     {
         "id": "inicio",
-        "pergunta": "Selecione a linha ou modelo do aparelho para iniciar o diagnóstico:",
+        "pergunta": "Selecione o modelo do aparelho para iniciar o diagnóstico:",
         "opcoes": [
-            {"texto": "Linha iPhone 11 (11, 11 Pro, 11 Pro Max)", "proximo": "linha_iphone11_defeitos"}
+            {"texto": "iPhone 11", "proximo": "defeitos_11_series"},
+            {"texto": "iPhone 11 Pro", "proximo": "defeitos_11_series"},
+            {"texto": "iPhone 11 Pro Max", "proximo": "defeitos_11_series"}
         ]
     },
     {
-        "id": "linha_iphone11_defeitos",
+        "id": "defeitos_11_series",
         "pergunta": "Qual o sintoma principal apresentado pelo aparelho?",
         "opcoes": [
-            {"texto": "Não liga - Tela Preta, consumo oscilante na fonte (ex: 0A -> 320mA -> 1.4A)", "proximo": "ip11_consumo_pos_power_nand"},
+            {"texto": "Não liga - Consumo Alto (> 2A) logo após apertar o Power", "proximo": "ip11_curto_alto_pos_power"},
+            {"texto": "Não liga - Tela Preta, consumo oscilante na fonte (ex: 0A -> 320mA -> 1.4A)", "proximo": "ip11_consumo_oscilante_nand"},
             {"texto": "Não liga - Fica reiniciando na Maçã (Loop)", "proximo": "ip11_loop_maca"}
         ]
     },
     {
-        "id": "ip11_consumo_pos_power_nand",
-        "titulo": "Linha iPhone 11 - Não Liga (Consumo Pós-Power / Tela Preta)",
-        "descricao": "Sintoma: O aparelho não apresenta consumo inicial, mas ao apertar o Power, a corrente oscila repetidamente e a tela permanece apagada (ex: 0A -> 320mA -> 1.4A -> 500mA -> 0A).",
+        "id": "ip11_curto_alto_pos_power",
+        "titulo": "Consumo Alto (> 2A) Pós-Power (Curto VDD_MAIN/BOOST)",
+        "descricao": "Sintoma: O aparelho zera na fonte desligado. Ao apertar o botão Power, a corrente pula imediatamente para 2A ou mais (geralmente desarmando a fonte).",
         "passos": [
-            "1. **Diferenciação do Defeito:** Como a tela fica preta (não aparece a maçã), o problema ocorre logo no início do boot. Se aparecesse a maçã, o suspeito principal seria o flex do auricular.",
-            "2. **Alvo Principal (Memória NAND):** Esse salto de corrente específico, documentado e comum na linha 11, quase sempre indica um curto nas malhas de alimentação da memória NAND.",
-            "3. **Medição na Bancada:** Vá direto para o setor da NAND. Use o multímetro em escala de diodo e meça os capacitores ao redor da memória. Verifique curto nas malhas principais (ex: **PP3V0_NAND**, **PP0V9_NAND**, **PP1V8_IO**).",
-            "4. **Solução:** Ao encontrar a linha em curto, injete a tensão correspondente da malha (com atenção redobrada para não exceder o limite de tensão, especialmente na malha de 0.9V) para encontrar o capacitor que está aquecendo e faça a substituição."
+            "1. **Entendendo o Comportamento:** Embora o consumo alto só apareça após o pulso de boot, este comportamento é clássico de um curto franco nas linhas primárias **VDD_MAIN** ou **VDD_BOOST**. A arquitetura da placa segura a corrente através do mosfet de chaveamento até o aparelho ser ativado.",
+            "2. **Medição a Frio:** Com a placa sem energia, coloque o multímetro na escala de diodo/continuidade e meça os capacitores das malhas VDD_MAIN e VDD_BOOST para confirmar qual delas está em curto com o GND.",
+            "3. **Injeção de Tensão:** Ao confirmar a malha em curto, injete tensão diretamente nela. Comece com uma tensão baixa (ex: 1V a 2V) para não estressar a placa, mas com a corrente da fonte livre.",
+            "4. **Caça ao Curto:** Utilize breu (rosin), spray congelante ou uma câmera térmica. O componente em curto (quase sempre um capacitor) vai dissipar calor rapidamente.",
+            "5. **Solução:** Remova o capacitor defeituoso e meça a malha novamente. Se o curto sumir, a placa voltará a ligar. Substitua o componente por um de mesma capacitância para manter a estabilidade da linha."
         ],
-        "referencia": "https://repair.wiki/w/IPhone_11_Not_Powering_on,_After_Prompt_to_Boot_Current_Jumps_Back_and_Forth",
         "opcoes": [
-            {"texto": "Voltar aos Defeitos da Linha 11", "proximo": "linha_iphone11_defeitos"},
+            {"texto": "Voltar aos Defeitos", "proximo": "defeitos_11_series"},
+            {"texto": "Voltar ao Início", "proximo": "inicio"}
+        ]
+    },
+    {
+        "id": "ip11_consumo_oscilante_nand",
+        "titulo": "Não Liga (Consumo Oscilante / Tela Preta)",
+        "descricao": "Sintoma: Ao apertar o Power, a corrente oscila repetidamente e a tela permanece apagada (ex: 0A -> 320mA -> 1.4A -> 500mA -> 0A).",
+        "passos": [
+            "1. **Diferenciação do Defeito:** Como a tela fica preta (não aparece a maçã), o problema ocorre logo no início da varredura de boot.",
+            "2. **Alvo Principal (Memória NAND):** Esse salto de corrente específico, especialmente na linha 11, quase sempre indica um curto nas malhas de alimentação da memória NAND.",
+            "3. **Medição na Bancada:** Vá direto para o setor da NAND. Use o multímetro em escala de diodo e verifique curto nas malhas principais como **PP3V0_NAND**, **PP0V9_NAND** e **PP1V8_IO**.",
+            "4. **Solução:** Ao encontrar a linha em curto, injete a tensão correspondente da malha (ATENÇÃO redobrada para não injetar mais de 0.9V na PP0V9_NAND para não queimar a memória) para encontrar o capacitor que está aquecendo e faça a substituição."
+        ],
+        "opcoes": [
+            {"texto": "Voltar aos Defeitos", "proximo": "defeitos_11_series"},
             {"texto": "Voltar ao Início", "proximo": "inicio"}
         ]
     },
     {
         "id": "ip11_loop_maca",
-        "titulo": "Linha iPhone 11 - Loop na Maçã",
-        "descricao": "Sintoma: O aparelho liga, aparece o logotipo da Apple e reinicia em seguida (Loop).",
+        "titulo": "Loop na Maçã",
+        "descricao": "Sintoma: O aparelho liga, aparece o logotipo da Apple na tela e reinicia em seguida (Loop).",
         "passos": [
             "1. **Teste Rápido (Auricular):** Desconecte o flex do auricular (Proximity/Flood Illuminator Flex) e tente ligar a placa novamente.",
-            "2. **Diagnóstico:** Se o aparelho ligar e iniciar o sistema normalmente, o defeito é oxidação ou falha no próprio flex do auricular.",
-            "3. **Solução:** Para resolver mantendo o Face ID, faça o transplante dos sensores originais para um flex novo."
+            "2. **Diagnóstico:** Se o aparelho ligar e iniciar o sistema normalmente, o defeito é oxidação ou curto no próprio flex do auricular.",
+            "3. **Solução:** Para resolver e manter o funcionamento do Face ID, faça o transplante dos sensores originais para um flex novo."
         ],
         "opcoes": [
-            {"texto": "Voltar aos Defeitos da Linha 11", "proximo": "linha_iphone11_defeitos"},
+            {"texto": "Voltar aos Defeitos", "proximo": "defeitos_11_series"},
             {"texto": "Voltar ao Início", "proximo": "inicio"}
         ]
     }
