@@ -13,8 +13,8 @@
         "pergunta": "Qual o sintoma principal apresentado pelo aparelho?",
         "opcoes": [
             {"texto": "Não liga - Consumo Alto (> 2A) logo após apertar o Power", "proximo": "ip11_curto_alto_pos_power"},
-            {"texto": "Não liga - Tela Preta, consumo oscilante na fonte (ex: 0A -> 320mA -> 1.4A)", "proximo": "ip11_consumo_oscilante_nand"},
-            {"texto": "Não liga - Fica reiniciando na Maçã (Loop)", "proximo": "ip11_loop_maca"}
+            {"texto": "Não liga - Tela Preta, consumo oscilante na fonte", "proximo": "ip11_consumo_oscilante_nand"},
+            {"texto": "Não liga - Fica reiniciando na Maçã (Bootloop)", "proximo": "ip11_loop_maca"}
         ]
     },
     {
@@ -50,12 +50,14 @@
     },
     {
         "id": "ip11_loop_maca",
-        "titulo": "Loop na Maçã",
-        "descricao": "Sintoma: O aparelho liga, aparece o logotipo da Apple na tela e reinicia em seguida (Loop).",
+        "titulo": "Loop na Maçã (Diagnóstico Avançado)",
+        "descricao": "Sintoma: O aparelho liga, aparece o logotipo da Apple e reinicia infinitamente. Restaurações via iTunes/3uTools podem falhar ou travar.",
         "passos": [
-            "1. **Teste Rápido (Auricular):** Desconecte o flex do auricular (Proximity/Flood Illuminator Flex) e tente ligar a placa novamente.",
-            "2. **Diagnóstico:** Se o aparelho ligar e iniciar o sistema normalmente, o defeito é oxidação ou curto no próprio flex do auricular.",
-            "3. **Solução:** Para resolver e manter o funcionamento do Face ID, faça o transplante dos sensores originais para um flex novo."
+            "1. **Teste Básico (Periféricos):** O primeiro suspeito é o flex do auricular (Proximity). Desconecte-o e tente ligar a placa. Se ligar normalmente, o defeito é oxidação no flex. Faça o transplante dos sensores para um flex novo mantendo o Face ID.",
+            "2. **Análise de Placa (Malha I2C):** Se a placa nua continuar em bootloop, o problema costuma ser falha de comunicação da CPU. Na linha 11, um defeito clássico é o **CI de Áudio (U4700)** entrar em curto e derrubar a malha **I2C_AOP_SDA**.",
+            "3. **Medição na Bancada:** O lugar mais fácil para medir essa malha é no próprio conector do flex do auricular na placa. Coloque o multímetro em escala de diodo (condução reversa).",
+            "4. **O Pulo do Gato (Valores de Referência):** O valor normal da linha SDA é de aproximadamente **0.342**. Se a medição apresentar um valor muito baixo (ex: **0.060** ou próximo de zero), o CI de Áudio está em curto puxando a linha para o terra.",
+            "5. **Solução Definitiva:** Remova o CI de Áudio (U4700). Teste ligar a placa novamente (ela deve dar o boot completo, mas sem áudio). Confirmado o diagnóstico, instale um U4700 novo ou faça reballing em um doador para finalizar o reparo."
         ],
         "opcoes": [
             {"texto": "Voltar aos Defeitos", "proximo": "defeitos_11_series"},
