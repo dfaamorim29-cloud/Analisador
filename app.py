@@ -5,7 +5,7 @@ import re
 import urllib.parse
 from datetime import datetime
 
-# Layout centralizado
+# Layout centralizado garantido
 st.set_page_config(page_title="iPhone & CIA - Diagnóstico Pro", page_icon="📱", layout="centered")
 
 st.markdown("""
