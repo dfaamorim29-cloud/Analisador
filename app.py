@@ -21,6 +21,39 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# ==========================================
+# BARRA LATERAL (ADMINISTRAÇÃO DO CHEFINHO)
+# ==========================================
+with st.sidebar:
+    st.write("### ⚙️ Painel de Controle")
+    st.write("Área restrita da gerência.")
+    
+    # 🔒 Troque "admin123" pela senha que você preferir usar
+    senha = st.text_input("Senha de Acesso:", type="password", key="senha_admin")
+    
+    if senha == "admin123":
+        st.success("Acesso Liberado!")
+        st.write("---")
+        st.write("**Histórico de Diagnósticos**")
+        
+        if os.path.exists('historico_uso.json'):
+            try:
+                with open('historico_uso.json', 'r', encoding='utf-8') as f:
+                    historico = json.load(f)
+                    if historico:
+                        st.metric(label="Total de Análises Realizadas", value=len(historico))
+                        # Mostra o histórico em ordem do mais recente para o mais antigo
+                        st.dataframe(historico[::-1], use_container_width=True)
+                    else:
+                        st.info("Nenhum registro encontrado ainda.")
+            except:
+                st.error("Erro ao ler o histórico de uso.")
+        else:
+            st.info("O arquivo de histórico ainda não foi criado. Ele aparecerá após a primeira análise.")
+
+# ==========================================
+# CORPO PRINCIPAL DO SISTEMA
+# ==========================================
 st.title(" iPhone & CIA")
 st.write("### Sistema Avançado de Diagnóstico 👨‍🔧")
 st.write("---")
@@ -143,7 +176,12 @@ with aba1:
                             st.write("**🛠 Causa Técnica:**")
                             st.write(encontrado['causa'])
                             
-                        st.info(f"**⚠️ Risco do Reparo:** {encontrado.get('risco', 'Médio')}")
+                        risco = encontrado.get('risco', 'Médio')
+                        st.info(f"**⚠️ Nível do Reparo:** {risco}")
+                        
+                        # ALERTA DE RISCO AUTOMÁTICO (PANIC LOG)
+                        if "ALTO" in risco.upper():
+                            st.error("🛑 **ALERTA DE BANCADA:** Reparo de placa avançado. É OBRIGATÓRIO informar ao cliente que o procedimento envolve calor na placa (CPU/Memória) e existe risco real do aparelho apagar em definitivo durante o processo.")
 
                         if "suspeito_principal" in encontrado:
                             st.warning(f"🎯 **Alvo Principal:** {encontrado['suspeito_principal']}")
@@ -194,7 +232,6 @@ with aba2:
         col_titulo, col_btn = st.columns([3, 1])
         
         with col_titulo:
-            # Mostra o modelo selecionado (se não estiver no início)
             if st.session_state.passo_guia != "inicio" and st.session_state.modelo_selecionado:
                 st.markdown(f"<span style='color: #666; font-size: 15px; font-weight: bold;'>📱 Aparelho Selecionado: {st.session_state.modelo_selecionado}</span>", unsafe_allow_html=True)
             
@@ -204,7 +241,6 @@ with aba2:
                 st.markdown(f"<p style='font-size: 18px;'>{no_atual.get('pergunta', no_atual.get('descricao', ''))}</p>", unsafe_allow_html=True)
                 
         with col_btn:
-            # Botão de Voltar ao Início azul (type="primary") só aparece se não estiver no início
             if st.session_state.passo_guia != "inicio":
                 if st.button("🏠 Voltar ao Início", type="primary", use_container_width=True):
                     st.session_state.passo_guia = "inicio"
@@ -215,6 +251,15 @@ with aba2:
         if 'passos' in no_atual:
             for p in no_atual['passos']:
                 st.markdown(p)
+                
+            # ALERTA DE RISCO AUTOMÁTICO (GUIA INTERATIVO)
+            # Lê todo o texto dos passos em minúsculo para caçar palavras-chave de risco alto
+            texto_completo = " ".join(no_atual['passos']).lower()
+            palavras_de_risco = ['reballing', 'cpu', 'nand', 'interposer', 'bga', 'solda', 'reflow']
+            
+            if any(palavra in texto_completo for palavra in palavras_de_risco):
+                st.write("") # Espaço
+                st.error("🛑 **ALERTA DE BANCADA:** Este diagnóstico indica um reparo a nível de componente que exige aquecimento da placa. **É OBRIGATÓRIO alertar o cliente sobre os riscos envolvidos**, incluindo a possibilidade de o aparelho desligar permanentemente (risco de morte) devido ao estresse térmico antes de aprovar o orçamento.")
         
         st.markdown('</div>', unsafe_allow_html=True)
         st.write("---")
@@ -222,12 +267,10 @@ with aba2:
         # Gerar botões de navegação
         opcoes = no_atual.get('opcoes', [])
         
-        # Cria colunas para os botões ficarem lado a lado
         cols = st.columns(len(opcoes)) if len(opcoes) > 0 else []
         
         for i, opcao in enumerate(opcoes):
             if cols[i].button(opcao['texto'], key=f"btn_{opcao['proximo']}_{i}", use_container_width=True):
-                # Se estiver no início, salva qual aparelho foi clicado
                 if st.session_state.passo_guia == "inicio":
                     st.session_state.modelo_selecionado = opcao['texto']
                 
