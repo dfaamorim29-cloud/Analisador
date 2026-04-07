@@ -1,5 +1,13 @@
 [
   {
+    "erro": "AMCC PLANE0",
+    "modelos": ["TODOS"],
+    "periferico": "Memória RAM / CPU (AMCC)",
+    "causa": "Falha de comunicação entre CPU e Memória RAM (Controlador de Memória). Geralmente causado por solda fria ou trinca no BGA (CPU/RAM) após quedas fortes, ou dano no próprio chip de RAM.",
+    "risco": "Alto",
+    "obs": "Reparo de nível avançado. Passo 1: Meça malhas de comunicação/alimentação da RAM/CPU em escala de diodo. Passo 2: Verifique as tensões do PMIC com a placa startada. Passo 3: Faça o Reballing da Memória RAM ou do próprio SoC (CPU). Muito cuidado com o calor no {modelo} para não matar a placa em definitivo."
+  },
+  {
     "erro": "checkins from SpringBoard",
     "peso": 1,
     "modelos": ["TODOS"],
