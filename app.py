@@ -3,7 +3,7 @@ import json
 import os
 import re
 import urllib.parse
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 # Layout centralizado garantido
 st.set_page_config(page_title="iPhone & CIA - Diagnóstico Pro", page_icon="📱", layout="centered")
@@ -42,7 +42,6 @@ with st.sidebar:
                     historico = json.load(f)
                     if historico:
                         st.metric(label="Total de Análises Realizadas", value=len(historico))
-                        # Mostra o histórico em ordem do mais recente para o mais antigo
                         st.dataframe(historico[::-1], use_container_width=True)
                     else:
                         st.info("Nenhum registro encontrado ainda.")
@@ -87,7 +86,11 @@ def registrar_uso(modelo, diagnostico):
             with open(arquivo_historico, 'r', encoding='utf-8') as f:
                 historico = json.load(f)
         except: pass
-    agora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        
+    # Ajuste de Fuso Horário para Goiânia/Brasília (UTC-3)
+    fuso_br = timezone(timedelta(hours=-3))
+    agora = datetime.now(fuso_br).strftime("%d/%m/%Y %H:%M:%S")
+    
     historico.append({"Data/Hora": agora, "Aparelho": modelo, "Diagnóstico": diagnostico})
     try:
         with open(arquivo_historico, 'w', encoding='utf-8') as f:
@@ -102,7 +105,11 @@ aba1, aba2 = st.tabs(["📄 Leitor de Panic Log", "🧭 Guia Interativo de Banca
 # ==========================================
 with aba1:
     try:
-        arquivo = st.file_uploader("", key="analise_v28")
+        # Gerenciador de estado para limpar o botão de upload
+        if 'uploader_key' not in st.session_state:
+            st.session_state.uploader_key = 0
+
+        arquivo = st.file_uploader("", key=f"analise_v28_{st.session_state.uploader_key}")
 
         if arquivo is not None:
             nome_arquivo = arquivo.name.lower()
@@ -197,6 +204,13 @@ with aba1:
                         st.session_state.log_registrado = arquivo.name
 
                     st.write("---")
+                    
+                    # Botão para resetar o upload e voltar a caixa grande
+                    if st.button("🔄 Analisar Novo Log", type="primary", use_container_width=True):
+                        st.session_state.uploader_key += 1
+                        st.rerun()
+                        
+                    st.write("---")    
                     email_dest = "dfaamorim29@gmail.com"
                     assunto = urllib.parse.quote(f"LOG PARA CORREÇÃO DE CÓDIGO - {modelo_comercial}")
                     corpo = urllib.parse.quote(f"Chefinho, o site não conseguiu analisar este arquivo do {modelo_comercial} e não encontrou o padrão. Segue em anexo para você analisar e fazer a correção do código-fonte!\n\n(Lembre-se de anexar o arquivo .ips ou .txt)")
@@ -253,7 +267,6 @@ with aba2:
                 st.markdown(p)
                 
             # ALERTA DE RISCO AUTOMÁTICO (GUIA INTERATIVO)
-            # Lê todo o texto dos passos em minúsculo para caçar palavras-chave de risco alto
             texto_completo = " ".join(no_atual['passos']).lower()
             palavras_de_risco = ['reballing', 'cpu', 'nand', 'interposer', 'bga', 'solda', 'reflow']
             
