@@ -5,6 +5,13 @@ import re
 import urllib.parse
 from datetime import datetime, timedelta, timezone
 
+# Tenta importar a biblioteca de PDF
+try:
+    from fpdf import FPDF
+    HAS_FPDF = True
+except ImportError:
+    HAS_FPDF = False
+
 # Layout centralizado garantido
 st.set_page_config(page_title="iPhone & CIA - Diagnóstico Pro", page_icon="📱", layout="centered")
 
@@ -97,6 +104,65 @@ def registrar_uso(modelo, diagnostico):
             json.dump(historico, f, indent=4, ensure_ascii=False)
     except: pass
 
+def gerar_pdf_laudo(modelo, data_log, falha, periferico, causa, risco, alvo, dica):
+    pdf = FPDF()
+    pdf.add_page()
+    
+    # Função para limpar emojis (PDF padrão não aceita emojis)
+    def texto_limpo(texto):
+        if not texto: return ""
+        return str(texto).encode('latin-1', 'ignore').decode('latin-1')
+
+    # Cabeçalho
+    pdf.set_font("Arial", 'B', 18)
+    pdf.cell(0, 10, "LAUDO TECNICO - IPHONE & CIA", ln=True, align='C')
+    pdf.ln(5)
+
+    # Informações do Aparelho
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 8, texto_limpo(f"Aparelho: {modelo}"), ln=True)
+    pdf.set_font("Arial", '', 12)
+    pdf.cell(0, 8, texto_limpo(f"Data do Log (Diagnostico): {data_log}"), ln=True)
+    pdf.ln(5)
+
+    # Diagnóstico Técnico
+    pdf.set_font("Arial", 'B', 14)
+    pdf.set_text_color(255, 0, 0) # Cor vermelha
+    pdf.cell(0, 10, texto_limpo(f"FALHA DETECTADA: {falha}"), ln=True)
+    pdf.set_text_color(0, 0, 0) # Volta para preto
+    pdf.ln(3)
+
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 8, "Perifericos Suspeitos / Modulos:", ln=True)
+    pdf.set_font("Arial", '', 12)
+    pdf.multi_cell(0, 8, texto_limpo(periferico))
+    pdf.ln(2)
+
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 8, "Causa Tecnica do Reinicio:", ln=True)
+    pdf.set_font("Arial", '', 12)
+    pdf.multi_cell(0, 8, texto_limpo(causa))
+    pdf.ln(2)
+
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 8, texto_limpo(f"Nivel de Risco do Reparo: {risco}"), ln=True)
+    if alvo:
+        pdf.cell(0, 8, texto_limpo(f"Alvo Principal: {alvo}"), ln=True)
+    pdf.ln(5)
+
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 8, "Conclusao / Parecer Tecnico:", ln=True)
+    pdf.set_font("Arial", '', 12)
+    pdf.multi_cell(0, 8, texto_limpo(dica))
+    
+    pdf.ln(15)
+    pdf.set_font("Arial", 'I', 10)
+    pdf.set_text_color(128, 128, 128)
+    pdf.cell(0, 10, "Este laudo foi gerado automaticamente pelo Sistema Avancado de Diagnostico iPhone & CIA.", ln=True, align='C')
+
+    # Retorna o PDF como bytes compatível com o Streamlit
+    return pdf.output(dest='S').encode('latin-1')
+
 # --- ESTRUTURA DE ABAS ---
 aba1, aba2 = st.tabs(["📄 Leitor de Panic Log", "🧭 Guia Interativo de Bancada"])
 
@@ -188,10 +254,11 @@ with aba1:
                         
                         # ALERTA DE RISCO AUTOMÁTICO (PANIC LOG)
                         if "ALTO" in risco.upper():
-                            st.error("🛑 **ALERTA DE BANCADA:** Reparo de placa avançado. É OBRIGATÓRIO informar ao cliente que o procedimento envolve calor na placa (CPU/Memória) e existe risco real do aparelho apagar em definitivo durante o processo.")
+                            st.error("🛑 **ALERTA DE BANCADA:** Reparo de placa avançado. É OBRIGATÓRIO informar ao cliente que o procedimento envolve calor na placa e existe risco real do aparelho apagar em definitivo durante o processo.")
 
-                        if "suspeito_principal" in encontrado:
-                            st.warning(f"🎯 **Alvo Principal:** {encontrado['suspeito_principal']}")
+                        alvo_principal = encontrado.get("suspeito_principal", "")
+                        if alvo_principal:
+                            st.warning(f"🎯 **Alvo Principal:** {alvo_principal}")
                         
                         dica = encontrado['obs'].replace("{modelo}", modelo_comercial)
                         st.success(f"**💡 Dica do Chefinho:**\n\n{dica}")
@@ -205,10 +272,34 @@ with aba1:
 
                     st.write("---")
                     
-                    # Botão para resetar o upload e voltar a caixa grande
-                    if st.button("🔄 Analisar Novo Log", type="primary", use_container_width=True):
-                        st.session_state.uploader_key += 1
-                        st.rerun()
+                    # BOTÕES DE AÇÃO: NOVO LOG e GERAR PDF
+                    col_btn1, col_btn2 = st.columns(2)
+                    
+                    with col_btn1:
+                        # Botão para resetar o upload e voltar a caixa grande
+                        if st.button("🔄 Analisar Novo Log", type="primary", use_container_width=True):
+                            st.session_state.uploader_key += 1
+                            st.rerun()
+                            
+                    with col_btn2:
+                        if encontrado:
+                            if HAS_FPDF:
+                                # Gera o PDF em memória
+                                pdf_bytes = gerar_pdf_laudo(
+                                    modelo_comercial, data_log, encontrado['erro'], 
+                                    encontrado['periferico'], encontrado['causa'], 
+                                    risco, alvo_principal, dica
+                                )
+                                # Botão de Download do Streamlit
+                                st.download_button(
+                                    label="📄 Baixar Laudo em PDF",
+                                    data=pdf_bytes,
+                                    file_name=f"Laudo_{modelo_comercial.replace(' ', '_')}.pdf",
+                                    mime="application/pdf",
+                                    use_container_width=True
+                                )
+                            else:
+                                st.warning("⚠️ Instale a biblioteca fpdf (pip install fpdf) para gerar laudos.")
                         
                     st.write("---")    
                     email_dest = "dfaamorim29@gmail.com"
