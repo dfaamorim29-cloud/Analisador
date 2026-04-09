@@ -1,5 +1,14 @@
 [
   {
+    "erro": "DART-AVE",
+    "modelos": ["TODOS"],
+    "periferico": "Câmeras (Traseira/Frontal) ou Face ID",
+    "causa": "Falha de comunicação no Apple Video Engine (AVE) e CPUDART. O processador entra em pânico ao tentar processar vídeo de um periférico corrompido, geralmente por oxidação ou curto nas câmeras ou no flex TrueDepth (Face ID).",
+    "risco": "Médio para Alto",
+    "suspeito_principal": "Câmera Traseira ou Flex do Face ID",
+    "obs": "Passo 1: Desconecte a Câmera Traseira e ligue o {modelo}. Passo 2: Se continuar reiniciando, desconecte a Câmera Frontal / Face ID. Se o aparelho estabilizar, substitua a peça defeituosa. Passo 3: Se o erro persistir com tudo desconectado, o defeito é na Placa Lógica (Inspecione conectores FPC e meça as malhas MIPI e de alimentação das câmeras)."
+  },
+  {
     "erro": "AMCC PLANE0",
     "modelos": ["TODOS"],
     "periferico": "Memória RAM / CPU (AMCC)",
