@@ -28,6 +28,65 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# --- FUNÇÃO GERADORA DE RECIBO EM PDF ---
+def gerar_pdf_recibo(cliente, cpf, modelo, servico, garantia, pagamento, valor):
+    pdf = FPDF()
+    pdf.add_page()
+    
+    def texto_limpo(texto):
+        if not texto: return ""
+        # Converte caracteres especiais para evitar erros no PDF
+        return str(texto).encode('latin-1', 'replace').decode('latin-1')
+
+    # Cabeçalho da Empresa
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(0, 10, texto_limpo("iPhone & Cia - Assistência Técnica em Goiânia"), ln=True, align='C')
+    
+    pdf.set_font("Arial", '', 10)
+    pdf.cell(0, 6, texto_limpo("CNPJ: 31.042.442/0001-24 | Telefone/WhatsApp: (62) 99289-7531"), ln=True, align='C')
+    pdf.ln(10)
+
+    # Título do Documento
+    pdf.set_font("Arial", 'B', 14)
+    pdf.cell(0, 10, texto_limpo("RECIBO DE PRESTAÇÃO DE SERVIÇOS"), ln=True, align='C')
+    pdf.ln(5)
+
+    # Texto principal do Recibo
+    pdf.set_font("Arial", '', 12)
+    texto_recibo = f"Recebemos de {cliente}, inscrito(a) sob o CPF {cpf}, a importância de R$ {valor} referente ao pagamento do serviço detalhado abaixo."
+    pdf.multi_cell(0, 8, texto_limpo(texto_recibo))
+    pdf.ln(5)
+
+    # Detalhes Técnicos
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 8, texto_limpo("Detalhes do Aparelho e Serviço:"), ln=True)
+    
+    pdf.set_font("Arial", '', 12)
+    pdf.cell(0, 8, texto_limpo(f"- Aparelho: {modelo}"), ln=True)
+    pdf.cell(0, 8, texto_limpo(f"- Serviço Executado: {servico}"), ln=True)
+    pdf.cell(0, 8, texto_limpo(f"- Forma de Pagamento: {pagamento}"), ln=True)
+    pdf.cell(0, 8, texto_limpo(f"- Garantia do Serviço: {garantia}"), ln=True)
+    pdf.ln(15)
+
+    # Data e Local (Goiânia - GO)
+    fuso_br = timezone(timedelta(hours=-3))
+    data_atual = datetime.now(fuso_br).strftime("%d/%m/%Y")
+    
+    pdf.set_font("Arial", '', 12)
+    pdf.cell(0, 8, texto_limpo(f"Goiânia - GO, {data_atual}"), ln=True, align='R')
+    pdf.ln(25)
+
+    # Assinatura
+    pdf.cell(0, 8, "_____________________________________________________", ln=True, align='C')
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 8, texto_limpo("iPhone & Cia - Assistência Técnica"), ln=True, align='C')
+    
+    pdf.set_font("Arial", 'I', 9)
+    pdf.set_text_color(100, 100, 100)
+    pdf.cell(0, 8, texto_limpo("Nota: A garantia cobre apenas o serviço executado. Não cobre mau uso, quedas ou contato com líquidos."), ln=True, align='C')
+
+    return pdf.output(dest='S').encode('latin-1')
+
 # ==========================================
 # BARRA LATERAL (ADMINISTRAÇÃO DO CHEFINHO)
 # ==========================================
@@ -35,27 +94,65 @@ with st.sidebar:
     st.write("### ⚙️ Painel de Controle")
     st.write("Área restrita da gerência.")
     
-    # 🔒 Troque "admin123" pela senha que você preferir usar
+    # 🔒 Senha
     senha = st.text_input("Senha de Acesso:", type="password", key="senha_admin")
     
     if senha == "admin123":
         st.success("Acesso Liberado!")
-        st.write("---")
-        st.write("**Histórico de Diagnósticos**")
         
-        if os.path.exists('historico_uso.json'):
-            try:
-                with open('historico_uso.json', 'r', encoding='utf-8') as f:
-                    historico = json.load(f)
-                    if historico:
-                        st.metric(label="Total de Análises Realizadas", value=len(historico))
-                        st.dataframe(historico[::-1], use_container_width=True)
+        # MENU DE NAVEGAÇÃO DO ADMIN
+        menu_admin = st.radio("Escolha a Ferramenta:", ["📊 Histórico de Logs", "🧾 Gerador de Recibos"])
+        st.write("---")
+        
+        if menu_admin == "📊 Histórico de Logs":
+            st.write("**Histórico de Diagnósticos**")
+            if os.path.exists('historico_uso.json'):
+                try:
+                    with open('historico_uso.json', 'r', encoding='utf-8') as f:
+                        historico = json.load(f)
+                        if historico:
+                            st.metric(label="Total de Análises Realizadas", value=len(historico))
+                            st.dataframe(historico[::-1], use_container_width=True)
+                        else:
+                            st.info("Nenhum registro encontrado.")
+                except:
+                    st.error("Erro ao ler o histórico.")
+            else:
+                st.info("O arquivo de histórico ainda não foi criado.")
+                
+        elif menu_admin == "🧾 Gerador de Recibos":
+            st.write("**Emissão de Recibo Rápida**")
+            
+            if not HAS_FPDF:
+                st.error("A biblioteca 'fpdf' não está instalada. O recibo não pode ser gerado.")
+            else:
+                with st.form("form_recibo"):
+                    rec_cliente = st.text_input("Nome do Cliente:")
+                    rec_cpf = st.text_input("CPF do Cliente:")
+                    rec_modelo = st.text_input("Modelo do Aparelho (Ex: iPhone 11 Pro):")
+                    rec_servico = st.text_input("Serviço Executado (Ex: Troca de Tela, Reparo em Placa):")
+                    rec_valor = st.text_input("Valor do Serviço (Ex: 450,00):")
+                    
+                    rec_pagamento = st.selectbox("Forma de Pagamento:", ["PIX", "Cartão de Crédito", "Cartão de Débito", "Dinheiro"])
+                    rec_garantia = st.selectbox("Garantia:", ["90 Dias (Padrão)", "30 Dias", "Sem Garantia (Aparelho Oxidado)", "Especial (Descrita no Serviço)"])
+                    
+                    btn_gerar_recibo = st.form_submit_button("Gerar Recibo PDF", type="primary")
+                    
+                if btn_gerar_recibo:
+                    if rec_cliente and rec_valor and rec_servico:
+                        pdf_recibo_bytes = gerar_pdf_recibo(
+                            rec_cliente, rec_cpf, rec_modelo, rec_servico, rec_garantia, rec_pagamento, rec_valor
+                        )
+                        st.success("✅ Recibo gerado com sucesso!")
+                        st.download_button(
+                            label="📥 Baixar Recibo PDF",
+                            data=pdf_recibo_bytes,
+                            file_name=f"Recibo_iPhone_e_Cia_{rec_cliente.replace(' ', '_')}.pdf",
+                            mime="application/pdf",
+                            use_container_width=True
+                        )
                     else:
-                        st.info("Nenhum registro encontrado ainda.")
-            except:
-                st.error("Erro ao ler o histórico de uso.")
-        else:
-            st.info("O arquivo de histórico ainda não foi criado. Ele aparecerá após a primeira análise.")
+                        st.warning("Preencha ao menos Nome, Serviço e Valor para gerar.")
 
 # ==========================================
 # CORPO PRINCIPAL DO SISTEMA
@@ -94,7 +191,6 @@ def registrar_uso(modelo, diagnostico):
                 historico = json.load(f)
         except: pass
         
-    # Ajuste de Fuso Horário para Goiânia/Brasília (UTC-3)
     fuso_br = timezone(timedelta(hours=-3))
     agora = datetime.now(fuso_br).strftime("%d/%m/%Y %H:%M:%S")
     
@@ -108,28 +204,24 @@ def gerar_pdf_laudo(modelo, data_log, falha, periferico, causa, risco, alvo, dic
     pdf = FPDF()
     pdf.add_page()
     
-    # Função para limpar emojis (PDF padrão não aceita emojis)
     def texto_limpo(texto):
         if not texto: return ""
         return str(texto).encode('latin-1', 'ignore').decode('latin-1')
 
-    # Cabeçalho
     pdf.set_font("Arial", 'B', 18)
     pdf.cell(0, 10, "LAUDO TECNICO - IPHONE & CIA", ln=True, align='C')
     pdf.ln(5)
 
-    # Informações do Aparelho
     pdf.set_font("Arial", 'B', 12)
     pdf.cell(0, 8, texto_limpo(f"Aparelho: {modelo}"), ln=True)
     pdf.set_font("Arial", '', 12)
     pdf.cell(0, 8, texto_limpo(f"Data do Log (Diagnostico): {data_log}"), ln=True)
     pdf.ln(5)
 
-    # Diagnóstico Técnico
     pdf.set_font("Arial", 'B', 14)
-    pdf.set_text_color(255, 0, 0) # Cor vermelha
+    pdf.set_text_color(255, 0, 0)
     pdf.cell(0, 10, texto_limpo(f"FALHA DETECTADA: {falha}"), ln=True)
-    pdf.set_text_color(0, 0, 0) # Volta para preto
+    pdf.set_text_color(0, 0, 0)
     pdf.ln(3)
 
     pdf.set_font("Arial", 'B', 12)
@@ -160,7 +252,6 @@ def gerar_pdf_laudo(modelo, data_log, falha, periferico, causa, risco, alvo, dic
     pdf.set_text_color(128, 128, 128)
     pdf.cell(0, 10, "Este laudo foi gerado automaticamente pelo Sistema Avancado de Diagnostico iPhone & CIA.", ln=True, align='C')
 
-    # Retorna o PDF como bytes compatível com o Streamlit
     return pdf.output(dest='S').encode('latin-1')
 
 # --- ESTRUTURA DE ABAS ---
@@ -171,7 +262,6 @@ aba1, aba2 = st.tabs(["📄 Leitor de Panic Log", "🧭 Guia Interativo de Banca
 # ==========================================
 with aba1:
     try:
-        # Gerenciador de estado para limpar o botão de upload
         if 'uploader_key' not in st.session_state:
             st.session_state.uploader_key = 0
 
@@ -252,7 +342,6 @@ with aba1:
                         risco = encontrado.get('risco', 'Médio')
                         st.info(f"**⚠️ Nível do Reparo:** {risco}")
                         
-                        # ALERTA DE RISCO AUTOMÁTICO (PANIC LOG)
                         if "ALTO" in risco.upper():
                             st.error("🛑 **ALERTA DE BANCADA:** Reparo de placa avançado. É OBRIGATÓRIO informar ao cliente que o procedimento envolve calor na placa e existe risco real do aparelho apagar em definitivo durante o processo.")
 
@@ -272,11 +361,9 @@ with aba1:
 
                     st.write("---")
                     
-                    # BOTÕES DE AÇÃO: NOVO LOG e GERAR PDF
                     col_btn1, col_btn2 = st.columns(2)
                     
                     with col_btn1:
-                        # Botão para resetar o upload e voltar a caixa grande
                         if st.button("🔄 Analisar Novo Log", type="primary", use_container_width=True):
                             st.session_state.uploader_key += 1
                             st.rerun()
@@ -284,13 +371,11 @@ with aba1:
                     with col_btn2:
                         if encontrado:
                             if HAS_FPDF:
-                                # Gera o PDF em memória
                                 pdf_bytes = gerar_pdf_laudo(
                                     modelo_comercial, data_log, encontrado['erro'], 
                                     encontrado['periferico'], encontrado['causa'], 
                                     risco, alvo_principal, dica
                                 )
-                                # Botão de Download do Streamlit
                                 st.download_button(
                                     label="📄 Baixar Laudo em PDF",
                                     data=pdf_bytes,
@@ -321,17 +406,14 @@ with aba2:
     if not guias:
         st.warning("Nenhum guia carregado. Verifique o arquivo guias.json")
     else:
-        # Gerenciar estado da navegação e modelo
         if 'passo_guia' not in st.session_state:
             st.session_state.passo_guia = "inicio"
             
         if 'modelo_selecionado' not in st.session_state:
             st.session_state.modelo_selecionado = ""
 
-        # Localizar o nó atual do guia
         no_atual = next((g for g in guias if g['id'] == st.session_state.passo_guia), guias[0])
 
-        # Estrutura do cabeçalho com colunas para o botão "Voltar ao Início"
         st.markdown('<div class="guia-card">', unsafe_allow_html=True)
         
         col_titulo, col_btn = st.columns([3, 1])
@@ -352,23 +434,20 @@ with aba2:
                     st.session_state.modelo_selecionado = ""
                     st.rerun()
 
-        # Se tiver passos (resultado final)
         if 'passos' in no_atual:
             for p in no_atual['passos']:
                 st.markdown(p)
                 
-            # ALERTA DE RISCO AUTOMÁTICO (GUIA INTERATIVO)
             texto_completo = " ".join(no_atual['passos']).lower()
             palavras_de_risco = ['reballing', 'cpu', 'nand', 'interposer', 'bga', 'solda', 'reflow']
             
             if any(palavra in texto_completo for palavra in palavras_de_risco):
-                st.write("") # Espaço
+                st.write("") 
                 st.error("🛑 **ALERTA DE BANCADA:** Este diagnóstico indica um reparo a nível de componente que exige aquecimento da placa. **É OBRIGATÓRIO alertar o cliente sobre os riscos envolvidos**, incluindo a possibilidade de o aparelho desligar permanentemente (risco de morte) devido ao estresse térmico antes de aprovar o orçamento.")
         
         st.markdown('</div>', unsafe_allow_html=True)
         st.write("---")
 
-        # Gerar botões de navegação
         opcoes = no_atual.get('opcoes', [])
         
         cols = st.columns(len(opcoes)) if len(opcoes) > 0 else []
